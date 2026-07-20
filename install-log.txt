@@ -1,0 +1,5 @@
+npm warn invalid config depth="0npm" set in command line options
+npm warn invalid config Must be one of: null, numeric value
+3d-portfolio@0.0.0 C:\Users\hp\OneDrive\Desktop\portfolio\3d-portfolio
+└── (empty)
+
