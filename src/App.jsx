@@ -411,6 +411,11 @@ export default function App() {
                       <div className="timeline-title">Veer Bahadur Singh Purvanchal University</div>
                       <div className="timeline-subtitle">Bachelor of Computer Applications (BCA) — <span className="accent-text" style={{ fontSize: '0.85rem' }}>70%</span></div>
                     </div>
+                    <div className="timeline-item">
+                      <div className="timeline-date">2021 - 2022</div>
+                      <div className="timeline-title">Mahatma Gandhi Kashi Vidyapith</div>
+                      <div className="timeline-subtitle">Post Graduate Diploma in Computer Applications — <span className="accent-text" style={{ fontSize: '0.85rem' }}>56%</span></div>
+                    </div>
                   </div>
 
                   <button 
@@ -509,7 +514,7 @@ export default function App() {
                       </div>
 
                       {/* Project 3: NightShield */}
-                      <div className="project-card" style={{ marginTop: '24px', borderBottom: 'none', paddingBottom: 0 }}>
+                      <div className="project-card" style={{ marginTop: '24px' }}>
                         <h3>NightShield <span className="timeline-date" style={{ fontSize: '0.65rem', marginLeft: '10px' }}>(Feb - May 2026)</span></h3>
                         <p style={{ marginTop: '8px' }}>Developed a secure real-time messaging mobile application using Java and Android Studio, integrated with end-to-end AES-based encryption and custom encoding-decoding mechanisms to protect user communications.</p>
                         <div className="project-image-container">
@@ -520,6 +525,21 @@ export default function App() {
                           <span className="badge">Android Studio</span>
                           <span className="badge">Firebase</span>
                           <span className="badge">AES Encryption</span>
+                        </div>
+                      </div>
+
+                      {/* Project 4: IoT Digital Classroom */}
+                      <div className="project-card" style={{ marginTop: '24px', borderBottom: 'none', paddingBottom: 0 }}>
+                        <h3>IoT Digital Classroom <span className="timeline-date" style={{ fontSize: '0.65rem', marginLeft: '10px' }}>(Jan - Apr 2026)</span></h3>
+                        <p style={{ marginTop: '8px' }}>Designed and built an automated smart classroom system utilizing NodeMCU ESP8266 and Firebase Realtime Database. Integrated DHT11 sensors for climate telemetry, ultrasonic sensors for automated seating occupancy, and secure RFID authentication for door access control.</p>
+                        <div className="project-image-container">
+                          <img src="/iot_classroom_ss.png" alt="IoT Digital Classroom simulation screenshot" className="project-image" />
+                        </div>
+                        <div className="badge-container" style={{ marginTop: '12px' }}>
+                          <span className="badge">NodeMCU ESP8266</span>
+                          <span className="badge">Firebase</span>
+                          <span className="badge">C++ (Arduino)</span>
+                          <span className="badge">IoT Sensors</span>
                         </div>
                       </div>
                     </div>
@@ -569,6 +589,11 @@ export default function App() {
                       <div className="timeline-date">Nov 2025</div>
                       <div className="timeline-title">InnoStart 2025 Innovation Event</div>
                       <div className="timeline-subtitle">LPU School of Computer Applications</div>
+                    </div>
+                    <div className="timeline-item">
+                      <div className="timeline-date">Oct 2025</div>
+                      <div className="timeline-title">MSME InnovXperience Exhibition</div>
+                      <div className="timeline-subtitle">Participant — LPU Startup &amp; Enterprise Cell</div>
                     </div>
                   </div>
 
