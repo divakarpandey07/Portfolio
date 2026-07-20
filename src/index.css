@@ -997,3 +997,57 @@ p {
   transform: translateX(4px);
 }
 
+/* 3D Tilt & Shiny Glare Effects */
+.glass-card, .project-card {
+  position: relative;
+  transition: transform 0.15s ease-out, box-shadow 0.3s, border-color 0.3s;
+  transform-style: preserve-3d;
+}
+
+.glass-card::after, .project-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at var(--glare-x, 50%) var(--glare-y, 50%),
+    rgba(255, 255, 255, 0.15) 0%,
+    rgba(255, 255, 255, 0) 50%
+  );
+  opacity: var(--glare-opacity, 0);
+  pointer-events: none;
+  transition: opacity 0.3s;
+  z-index: 10;
+}
+
+/* Magnetic buttons base transition */
+.archive-view-more-btn, .archive-back-btn, .hud-logo {
+  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+
+/* Metallic Golden Shimmer Text Animation */
+.shimmer-title {
+  background: linear-gradient(
+    90deg,
+    #ffffff 0%,
+    #ffffff 35%,
+    #bda07a 50%,
+    #ffffff 65%,
+    #ffffff 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: metallicShimmer 6s linear infinite;
+}
+
+@keyframes metallicShimmer {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
+

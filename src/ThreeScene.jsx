@@ -171,10 +171,12 @@ function ProceduralMockRoom() {
       blobRef.current.rotation.x = Math.sin(time * 0.25) * 0.1;
     }
 
-    // 2. Animate 1,200 particle swarm along trigonometric flow field vortex
+    // 2. Animate 1,200 particle swarm along trigonometric flow field vortex + mouse interaction
     if (pointsRef.current) {
       const posAttr = pointsRef.current.geometry.attributes.position;
       const arr = posAttr.array;
+      const mouseX = (window.mx || 0) * 4.0;
+      const mouseY = (window.my || 0) * 3.0;
 
       for (let i = 0; i < particleCount; i++) {
         const xIdx = i * 3;
@@ -189,6 +191,16 @@ function ProceduralMockRoom() {
         py += velocities[i * 3] * delta * 4;
         px += Math.sin(time * 0.4 + py * 0.8 + i) * 0.25 * delta;
         pz += Math.cos(time * 0.4 + px * 0.8 + i) * 0.25 * delta;
+
+        // Dynamic mouse repulsion logic
+        const dx = px - mouseX;
+        const dy = py - mouseY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 1.4) {
+          const force = (1.4 - dist) * 0.6;
+          px += (dx / (dist || 0.001)) * force * delta * 6;
+          py += (dy / (dist || 0.001)) * force * delta * 6;
+        }
 
         // Reset if moving out of boundary
         if (py > 3.0) {

@@ -142,6 +142,81 @@ export default function App() {
     };
   }, []);
 
+  // 3D Interactive Card Tilt & Glare Refraction effect
+  useEffect(() => {
+    const cards = document.querySelectorAll('.glass-card, .project-card');
+    
+    const handleMove = (e) => {
+      const card = e.currentTarget;
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const xc = rect.width / 2;
+      const yc = rect.height / 2;
+      
+      const angleX = -(y - yc) / 30; // maximum tilt angle
+      const angleY = (x - xc) / 30;
+      
+      card.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg) scale3d(1.01, 1.01, 1.01)`;
+      
+      const glareX = (x / rect.width) * 100;
+      const glareY = (y / rect.height) * 100;
+      card.style.setProperty('--glare-x', `${glareX}%`);
+      card.style.setProperty('--glare-y', `${glareY}%`);
+      card.style.setProperty('--glare-opacity', '1');
+    };
+    
+    const handleLeave = (e) => {
+      const card = e.currentTarget;
+      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+      card.style.setProperty('--glare-opacity', '0');
+    };
+    
+    cards.forEach((card) => {
+      card.addEventListener('mousemove', handleMove);
+      card.addEventListener('mouseleave', handleLeave);
+    });
+    
+    return () => {
+      cards.forEach((card) => {
+        card.removeEventListener('mousemove', handleMove);
+        card.removeEventListener('mouseleave', handleLeave);
+      });
+    };
+  }, [view]);
+
+  // Magnetic interactive elements (attract button center slightly to cursor)
+  useEffect(() => {
+    const magneticElements = document.querySelectorAll('.archive-view-more-btn, .archive-back-btn, .hud-logo');
+    
+    const handleMouseMove = (e) => {
+      const el = e.currentTarget;
+      const rect = el.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      
+      el.style.transform = `translate3d(${x * 0.35}px, ${y * 0.35}px, 0)`;
+    };
+    
+    const handleMouseLeave = (e) => {
+      const el = e.currentTarget;
+      el.style.transform = 'translate3d(0, 0, 0)';
+    };
+    
+    magneticElements.forEach((el) => {
+      el.addEventListener('mousemove', handleMouseMove);
+      el.addEventListener('mouseleave', handleMouseLeave);
+    });
+    
+    return () => {
+      magneticElements.forEach((el) => {
+        el.removeEventListener('mousemove', handleMouseMove);
+        el.removeEventListener('mouseleave', handleMouseLeave);
+      });
+    };
+  }, [view]);
+
   const scrollToSection = (id) => {
     const targetRef = sectionRefs[id];
     if (targetRef && targetRef.current) {
@@ -239,10 +314,10 @@ export default function App() {
                     <span className="reveal-line stagger-1">WELCOME TO THE EXHIBITION</span>
                   </span>
                   <h1 className="line-wrapper">
-                    <span className="reveal-line stagger-2">Creative</span>
+                    <span className="reveal-line stagger-2 shimmer-title">Creative</span>
                   </h1>
                   <h1 className="line-wrapper">
-                    <span className="reveal-line stagger-3">Developer.</span>
+                    <span className="reveal-line stagger-3 shimmer-title">Developer.</span>
                   </h1>
                   
                   <div className="divider"></div>
@@ -716,7 +791,7 @@ function ArchivePage({ view, setView }) {
         <div className="archive-header">
           <div>
             <span className="accent-text" style={{ letterSpacing: '3px', fontSize: '0.7rem' }}>DIVAKAR</span>
-            <h2 style={{ fontSize: '2.0rem', marginTop: '6px' }}>{pageTitle}</h2>
+            <h2 style={{ fontSize: '2.0rem', marginTop: '6px' }} className="shimmer-title">{pageTitle}</h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginTop: '4px' }}>{pageSubtitle}</p>
           </div>
           <button className="archive-back-btn" onClick={() => setView('main')}>
