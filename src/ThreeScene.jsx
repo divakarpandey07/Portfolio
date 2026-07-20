@@ -97,30 +97,28 @@ function ProceduralMockRoom() {
   const bitsRef = useRef([]);
 
   const originalPositions = useRef(null);
-  const particleCount = 1200;
+  const particleCount = 350;
 
-  // Initialize unified points particles in a wave-vortex structure
+  // Initialize particles
   const [positions, velocities] = useMemo(() => {
     const pos = new Float32Array(particleCount * 3);
     const vel = new Float32Array(particleCount * 3);
     for (let i = 0; i < particleCount; i++) {
-      const angle = (i / particleCount) * Math.PI * 2 * 12; // Spiral revolutions
+      const angle = (i / particleCount) * Math.PI * 2 * 12;
       const radius = 1.0 + Math.random() * 3.5;
       const height = (Math.random() - 0.5) * 5.0;
-
       pos[i * 3] = Math.cos(angle) * radius;
       pos[i * 3 + 1] = height;
       pos[i * 3 + 2] = Math.sin(angle) * radius;
-
-      vel[i * 3] = 0.08 + Math.random() * 0.15; // float speed
+      vel[i * 3] = 0.08 + Math.random() * 0.15;
     }
     return [pos, vel];
   }, []);
 
-  // Set up 24 floating computer science data bits (0s as wireframe spheres, 1s as wireframe boxes)
+  // Only 12 floating CS bits (lightweight)
   const csBits = useMemo(() => {
-    return Array.from({ length: 26 }).map((_, i) => {
-      const angle = (i / 26) * Math.PI * 2;
+    return Array.from({ length: 12 }).map((_, i) => {
+      const angle = (i / 12) * Math.PI * 2;
       const radius = 2.0 + Math.random() * 1.8;
       return {
         isZero: i % 2 === 0,
@@ -132,46 +130,21 @@ function ProceduralMockRoom() {
     });
   }, []);
 
-  // Save original positions of blob vertices for displacement calculation
-  useEffect(() => {
-    if (blobRef.current) {
-      originalPositions.current = blobRef.current.geometry.attributes.position.array.slice();
-    }
-  }, []);
-
   useFrame((state, delta) => {
     const time = state.clock.getElapsedTime();
 
-    // 1. Real-time organic vertex displacement on central sphere (Fluid compute node)
-    if (blobRef.current && originalPositions.current) {
-      const geom = blobRef.current.geometry;
-      const posAttr = geom.attributes.position;
-      const original = originalPositions.current;
-      const v = new THREE.Vector3();
-
-      for (let i = 0; i < posAttr.count; i++) {
-        const origX = original[i * 3];
-        const origY = original[i * 3 + 1];
-        const origZ = original[i * 3 + 2];
-
-        // Complex multi-wave noise deformation
-        const wave = Math.sin(origX * 3.0 + time * 2.5) * 
-                     Math.cos(origY * 2.5 - time * 1.8) * 
-                     Math.sin(origZ * 2.0 + time * 1.5) * 0.15;
-
-        // Displace along surface normal vector
-        v.set(origX, origY, origZ).normalize().multiplyScalar(1.35 + wave);
-        posAttr.setXYZ(i, v.x, v.y, v.z);
-      }
-      posAttr.needsUpdate = true;
-      geom.computeVertexNormals();
-
-      // Slow orbital rotate
-      blobRef.current.rotation.y += delta * 0.12;
-      blobRef.current.rotation.x = Math.sin(time * 0.25) * 0.1;
+    // 1. Hardware-accelerated organic transformations on central sphere (Zero CPU cost)
+    if (blobRef.current) {
+      // Rotate the sphere organically
+      blobRef.current.rotation.y += delta * 0.15;
+      blobRef.current.rotation.x = Math.sin(time * 0.4) * 0.12;
+      
+      // Organically pulsate scale (simulating organic liquid expansion/contraction)
+      const scaleWave = 1.0 + Math.sin(time * 1.5) * 0.06;
+      blobRef.current.scale.set(scaleWave, scaleWave, scaleWave);
     }
 
-    // 2. Animate 1,200 particle swarm along trigonometric flow field vortex + mouse interaction
+    // 2. Animate 600 particle swarm along trigonometric flow field vortex + mouse interaction (Optimized)
     if (pointsRef.current) {
       const posAttr = pointsRef.current.geometry.attributes.position;
       const arr = posAttr.array;
@@ -192,11 +165,12 @@ function ProceduralMockRoom() {
         px += Math.sin(time * 0.4 + py * 0.8 + i) * 0.25 * delta;
         pz += Math.cos(time * 0.4 + px * 0.8 + i) * 0.25 * delta;
 
-        // Dynamic mouse repulsion logic
+        // Dynamic mouse repulsion logic (Optimized using distance squared check)
         const dx = px - mouseX;
         const dy = py - mouseY;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 1.4) {
+        const distSq = dx * dx + dy * dy;
+        if (distSq < 1.96) { // 1.4^2 = 1.96
+          const dist = Math.sqrt(distSq);
           const force = (1.4 - dist) * 0.6;
           px += (dx / (dist || 0.001)) * force * delta * 6;
           py += (dy / (dist || 0.001)) * force * delta * 6;
@@ -240,27 +214,22 @@ function ProceduralMockRoom() {
 
   return (
     <group position={[0, -0.6, 0]} rotation={[0, -Math.PI / 4, 0]}>
-      {/* Digital Network Grid Floor */}
-      <gridHelper args={[16, 16, '#00f0ff', '#0b162a']} position={[0, -0.05, 0]} opacity={0.12} transparent />
+      {/* Simplified Grid Floor */}
+      <gridHelper args={[14, 14, '#00f0ff', '#0b162a']} position={[0, -0.05, 0]} />
       
-      {/* Central Morphing Liquid-Metallic Core */}
-      <mesh ref={blobRef} position={[0, 0.8, 0]} castShadow>
-        <sphereGeometry args={[1.35, 32, 32]} />
-        <meshPhysicalMaterial 
+      {/* Central Sphere - using MeshStandardMaterial (much faster than MeshPhysicalMaterial) */}
+      <mesh ref={blobRef} position={[0, 0.8, 0]}>
+        <sphereGeometry args={[1.35, 20, 20]} />
+        <meshStandardMaterial
           color="#001a35"
           emissive="#020c1b"
-          roughness={0.02}
-          metalness={0.98}
-          clearcoat={1.0}
-          clearcoatRoughness={0.02}
-          transmission={0.35}
-          ior={1.65}
-          thickness={1.2}
-          envMapIntensity={2.5}
+          roughness={0.05}
+          metalness={0.95}
+          envMapIntensity={1.5}
         />
       </mesh>
       
-      {/* Dynamic Swarm Constellation (glowing dust particles) */}
+      {/* Optimized Particle Swarm - 350 particles */}
       <points ref={pointsRef}>
         <bufferGeometry>
           <bufferAttribute
@@ -269,84 +238,38 @@ function ProceduralMockRoom() {
           />
         </bufferGeometry>
         <pointsMaterial
-          size={0.045}
+          size={0.05}
           color="#e8d3b9"
           transparent
-          opacity={0.75}
+          opacity={0.7}
           blending={THREE.AdditiveBlending}
           depthWrite={false}
+          sizeAttenuation
         />
       </points>
 
-      {/* Floating Holographic Binary Bits (CS Theme) */}
+      {/* Lightweight Floating CS Bits - reduced to 12 */}
       {csBits.map((bit, idx) => (
-        <mesh 
-          key={idx} 
-          ref={(el) => (bitsRef.current[idx] = el)} 
-          position={bit.pos} 
-          castShadow
+        <mesh
+          key={idx}
+          ref={(el) => (bitsRef.current[idx] = el)}
+          position={bit.pos}
         >
           {bit.isZero ? (
-            <sphereGeometry args={[0.06, 8, 8]} />
+            <sphereGeometry args={[0.06, 6, 6]} />
           ) : (
             <boxGeometry args={[0.08, 0.08, 0.08]} />
           )}
-          <meshStandardMaterial 
-            color={bit.color} 
-            wireframe 
+          <meshStandardMaterial
+            color={bit.color}
+            wireframe
             emissive={bit.color}
-            emissiveIntensity={1.8}
+            emissiveIntensity={1.5}
             transparent
             opacity={0.65}
           />
         </mesh>
       ))}
-
-      {/* Floating Refraction Glass Panels */}
-      <group ref={glassPanelsRef}>
-        {/* Panel 1 */}
-        <mesh position={[-1.2, 1.2, 0.8]} rotation={[0.2, 0.4, 0.1]} castShadow receiveShadow>
-          <boxGeometry args={[0.9, 0.6, 0.02]} />
-          <meshPhysicalMaterial 
-            color="#ffffff" 
-            transmission={0.95} 
-            thickness={0.8} 
-            roughness={0.08} 
-            ior={1.5}
-            envMapIntensity={2.5} 
-            transparent 
-            opacity={0.25}
-          />
-        </mesh>
-        {/* Panel 2 */}
-        <mesh position={[1.4, 1.5, -0.6]} rotation={[-0.1, -0.3, 0.2]} castShadow receiveShadow>
-          <boxGeometry args={[0.7, 0.9, 0.02]} />
-          <meshPhysicalMaterial 
-            color="#ffffff" 
-            transmission={0.95} 
-            thickness={0.8} 
-            roughness={0.08} 
-            ior={1.5}
-            envMapIntensity={2.5} 
-            transparent 
-            opacity={0.25}
-          />
-        </mesh>
-        {/* Panel 3 */}
-        <mesh position={[0.6, 0.9, 1.4]} rotation={[0.3, -0.2, -0.1]} castShadow receiveShadow>
-          <boxGeometry args={[0.8, 0.5, 0.02]} />
-          <meshPhysicalMaterial 
-            color="#ffffff" 
-            transmission={0.95} 
-            thickness={0.8} 
-            roughness={0.08} 
-            ior={1.5}
-            envMapIntensity={2.5} 
-            transparent 
-            opacity={0.25}
-          />
-        </mesh>
-      </group>
     </group>
   );
 }
@@ -435,31 +358,22 @@ export default function ThreeScene({ modelPath = '/model.glb', scrollProgress = 
   return (
     <div style={{ width: '100%', height: '100%' }}>
       <Canvas
-        shadows
         camera={{ fov: 45, near: 0.1, far: 100 }}
-        gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, outputColorSpace: THREE.SRGBColorSpace }}
+        gl={{
+          antialias: false, // Disable anti-aliasing for big perf boost
+          toneMapping: THREE.ACESFilmicToneMapping,
+          outputColorSpace: THREE.SRGBColorSpace,
+          powerPreference: 'high-performance',
+        }}
+        dpr={[1, 1.5]} // Cap pixel ratio to 1.5 max (prevents 4K render on retina)
       >
         <color attach="background" args={['#020205']} />
         
-        {/* Cinematic colorful dark lighting */}
-        <ambientLight intensity={0.25} color="#0d1f3d" />
-        
-        {/* Soft cool fill lights */}
-        <pointLight position={[6, 8, 6]} intensity={1.8} color="#00f0ff" castShadow />
+        {/* Simplified lighting - no expensive shadows */}
+        <ambientLight intensity={0.35} color="#0d1f3d" />
+        <pointLight position={[6, 8, 6]} intensity={1.8} color="#00f0ff" />
         <pointLight position={[-6, 4, -6]} intensity={1.2} color="#ff007f" />
-        
-        {/* Primary spotlight shining down with shadows */}
-        <spotLight
-          position={[0, 10, 4]}
-          angle={0.7}
-          penumbra={0.9}
-          intensity={2.8}
-          color="#e8d3b9"
-          castShadow
-          shadow-mapSize-width={1024}
-          shadow-mapSize-height={1024}
-          shadow-bias={-0.0001}
-        />
+        <pointLight position={[0, 10, 4]} intensity={2.0} color="#e8d3b9" />
 
         {/* Background Environment map for dark metallic reflections */}
         <Suspense fallback={null}>

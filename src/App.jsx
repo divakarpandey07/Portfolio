@@ -108,149 +108,140 @@ export default function App() {
     };
   }, []);
 
-  // Track mouse coordinates for custom cursor and parallax depth
+  // Track mouse coordinates for custom cursor and parallax depth (RAF throttled)
   useEffect(() => {
+    let rafPending = false;
+    let latestEvent = null;
+    
     const handleMouseMove = (e) => {
-      setCursorPos({ x: e.clientX, y: e.clientY });
-      
-      // Calculate normalized mouse positions (-1 to 1) for WebGL scene
-      const normX = (e.clientX / window.innerWidth) * 2 - 1;
-      const normY = -(e.clientY / window.innerHeight) * 2 + 1;
-      window.mx = normX;
-      window.my = normY;
+      latestEvent = e;
+      if (rafPending) return;
+      rafPending = true;
+      requestAnimationFrame(() => {
+        if (latestEvent) {
+          setCursorPos({ x: latestEvent.clientX, y: latestEvent.clientY });
+          window.mx = (latestEvent.clientX / window.innerWidth) * 2 - 1;
+          window.my = -(latestEvent.clientY / window.innerHeight) * 2 + 1;
+        }
+        rafPending = false;
+      });
     };
 
     const handleMouseOver = (e) => {
       const target = e.target;
-      const isInteractive = 
-        target.tagName === 'A' || 
-        target.tagName === 'BUTTON' || 
-        target.closest('.glass-card') || 
+      const isInteractive =
+        target.tagName === 'A' ||
+        target.tagName === 'BUTTON' ||
+        target.closest('.glass-card') ||
         target.closest('.dot-wrapper') ||
         target.closest('.hud-nav-item') ||
         target.closest('.hud-logo');
-      
       setIsHovering(!!isInteractive);
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseover', handleMouseOver);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    window.addEventListener('mouseover', handleMouseOver, { passive: true });
     return () => {
-      window.removeMouseMove = null; // Clean react removal
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseover', handleMouseOver);
     };
   }, []);
 
-  // Magic Sparkle Cursor Trail generator
+  // Magic Sparkle Cursor Trail generator (Throttled)
   useEffect(() => {
+    if (window.innerWidth < 768) return; // Disable on mobile entirely
+    let lastSparkle = 0;
+    
     const handleMouseMove = (e) => {
-      if (window.innerWidth < 768) return;
+      const now = Date.now();
+      if (now - lastSparkle < 60) return; // Max 1 particle per 60ms
+      lastSparkle = now;
       
       const particle = document.createElement('div');
       particle.className = 'sparkle-particle';
       
-      const size = Math.random() * 4 + 3;
+      const size = Math.random() * 3 + 2;
       particle.style.width = `${size}px`;
       particle.style.height = `${size}px`;
-      
       particle.style.left = `${e.clientX}px`;
       particle.style.top = `${e.clientY}px`;
       
       const angle = Math.random() * Math.PI * 2;
-      const speed = Math.random() * 40 + 20;
-      const dx = Math.cos(angle) * speed;
-      const dy = Math.sin(angle) * speed;
-      
-      particle.style.setProperty('--dx', `${dx}px`);
-      particle.style.setProperty('--dy', `${dy}px`);
+      const speed = Math.random() * 30 + 15;
+      particle.style.setProperty('--dx', `${Math.cos(angle) * speed}px`);
+      particle.style.setProperty('--dy', `${Math.sin(angle) * speed}px`);
       
       document.body.appendChild(particle);
-      
-      setTimeout(() => {
-        particle.remove();
-      }, 800);
+      setTimeout(() => particle.remove(), 700);
     };
     
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
   // Magic Click Ripple & Sparkle Burst effect
+  // Click Ripple & Burst (Desktop only)
   useEffect(() => {
+    if (window.innerWidth < 768) return;
     const handleClick = (e) => {
       const ripple = document.createElement('div');
       ripple.className = 'click-ripple';
       ripple.style.left = `${e.clientX}px`;
       ripple.style.top = `${e.clientY}px`;
       document.body.appendChild(ripple);
-      
-      for (let i = 0; i < 6; i++) {
+      for (let i = 0; i < 4; i++) {
         const p = document.createElement('div');
         p.className = 'click-burst-particle';
         p.style.left = `${e.clientX}px`;
         p.style.top = `${e.clientY}px`;
-        
-        const angle = (i / 6) * Math.PI * 2;
-        const velocity = 35 + Math.random() * 20;
-        const dx = Math.cos(angle) * velocity;
-        const dy = Math.sin(angle) * velocity;
-        
-        p.style.setProperty('--dx', `${dx}px`);
-        p.style.setProperty('--dy', `${dy}px`);
+        const angle = (i / 4) * Math.PI * 2;
+        const velocity = 30 + Math.random() * 15;
+        p.style.setProperty('--dx', `${Math.cos(angle) * velocity}px`);
+        p.style.setProperty('--dy', `${Math.sin(angle) * velocity}px`);
         document.body.appendChild(p);
-        
-        setTimeout(() => p.remove(), 600);
+        setTimeout(() => p.remove(), 500);
       }
-      
-      setTimeout(() => ripple.remove(), 600);
+      setTimeout(() => ripple.remove(), 500);
     };
-    
     window.addEventListener('click', handleClick);
-    return () => {
-      window.removeEventListener('click', handleClick);
-    };
+    return () => window.removeEventListener('click', handleClick);
   }, []);
 
-  // 3D Interactive Card Tilt & Glare Refraction effect
+  // 3D Card Tilt & Glare (Desktop only, throttled)
   useEffect(() => {
+    if (window.innerWidth < 768) return;
     const cards = document.querySelectorAll('.glass-card, .project-card');
+    let rafId = null;
     
     const handleMove = (e) => {
-      const card = e.currentTarget;
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      
-      const xc = rect.width / 2;
-      const yc = rect.height / 2;
-      
-      const angleX = -(y - yc) / 30; // maximum tilt angle
-      const angleY = (x - xc) / 30;
-      
-      card.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg) scale3d(1.01, 1.01, 1.01)`;
-      
-      const glareX = (x / rect.width) * 100;
-      const glareY = (y / rect.height) * 100;
-      card.style.setProperty('--glare-x', `${glareX}%`);
-      card.style.setProperty('--glare-y', `${glareY}%`);
-      card.style.setProperty('--glare-opacity', '1');
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        const card = e.currentTarget;
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const angleX = -(y - rect.height / 2) / 32;
+        const angleY = (x - rect.width / 2) / 32;
+        card.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg) scale3d(1.01, 1.01, 1.01)`;
+        card.style.setProperty('--glare-x', `${(x / rect.width) * 100}%`);
+        card.style.setProperty('--glare-y', `${(y / rect.height) * 100}%`);
+        card.style.setProperty('--glare-opacity', '1');
+        rafId = null;
+      });
     };
-    
     const handleLeave = (e) => {
+      cancelAnimationFrame(rafId);
+      rafId = null;
       const card = e.currentTarget;
-      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+      card.style.transform = '';
       card.style.setProperty('--glare-opacity', '0');
     };
-    
     cards.forEach((card) => {
-      card.addEventListener('mousemove', handleMove);
+      card.addEventListener('mousemove', handleMove, { passive: true });
       card.addEventListener('mouseleave', handleLeave);
     });
-    
     return () => {
+      cancelAnimationFrame(rafId);
       cards.forEach((card) => {
         card.removeEventListener('mousemove', handleMove);
         card.removeEventListener('mouseleave', handleLeave);
@@ -258,29 +249,22 @@ export default function App() {
     };
   }, [view]);
 
-  // Magnetic interactive elements (attract button center slightly to cursor)
+  // Magnetic buttons (Desktop only)
   useEffect(() => {
+    if (window.innerWidth < 768) return;
     const magneticElements = document.querySelectorAll('.archive-view-more-btn, .archive-back-btn, .hud-logo');
-    
     const handleMouseMove = (e) => {
       const el = e.currentTarget;
       const rect = el.getBoundingClientRect();
       const x = e.clientX - rect.left - rect.width / 2;
       const y = e.clientY - rect.top - rect.height / 2;
-      
-      el.style.transform = `translate3d(${x * 0.35}px, ${y * 0.35}px, 0)`;
+      el.style.transform = `translate3d(${x * 0.3}px, ${y * 0.3}px, 0)`;
     };
-    
-    const handleMouseLeave = (e) => {
-      const el = e.currentTarget;
-      el.style.transform = 'translate3d(0, 0, 0)';
-    };
-    
+    const handleMouseLeave = (e) => { e.currentTarget.style.transform = 'translate3d(0,0,0)'; };
     magneticElements.forEach((el) => {
-      el.addEventListener('mousemove', handleMouseMove);
+      el.addEventListener('mousemove', handleMouseMove, { passive: true });
       el.addEventListener('mouseleave', handleMouseLeave);
     });
-    
     return () => {
       magneticElements.forEach((el) => {
         el.removeEventListener('mousemove', handleMouseMove);
