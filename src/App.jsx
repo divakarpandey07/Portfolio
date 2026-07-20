@@ -190,7 +190,7 @@ export default function App() {
             {/* Floating Top HUD Navigation */}
             <header className="hud">
               <div className="hud-logo" onClick={() => scrollToSection('hero')}>
-                DIVAKAR<span>.P</span>
+                DIVAKAR
               </div>
               <nav className="hud-nav">
                 {SECTIONS.map((sec) => (
@@ -248,7 +248,7 @@ export default function App() {
                   <div className="divider"></div>
                   
                   <p className="line-wrapper">
-                    <span className="reveal-line stagger-4">I am Divakar Pandey, software engineer.</span>
+                    <span className="reveal-line stagger-4">I am Divakar, software engineer.</span>
                   </p>
                   <p className="line-wrapper">
                     <span className="reveal-line stagger-5">This portfolio is a journey through my workspace, projects, and certifications.</span>
@@ -527,7 +527,7 @@ export default function App() {
 
                   <div style={{ marginTop: '40px', borderTop: '1px solid rgba(255, 255, 255, 0.05)', paddingTop: '24px' }}>
                     <p style={{ fontSize: '0.75rem', margin: 0, fontFamily: 'var(--font-accent)', letterSpacing: '1px', textTransform: 'uppercase' }}>
-                      © {new Date().getFullYear()} Divakar Pandey. All rights reserved.
+                      © {new Date().getFullYear()} Divakar. All rights reserved.
                     </p>
                   </div>
                 </div>
@@ -715,7 +715,7 @@ function ArchivePage({ view, setView }) {
       <div className="glass-card" style={{ width: '100%' }}>
         <div className="archive-header">
           <div>
-            <span className="accent-text" style={{ letterSpacing: '3px', fontSize: '0.7rem' }}>DIVAKAR PANDEY</span>
+            <span className="accent-text" style={{ letterSpacing: '3px', fontSize: '0.7rem' }}>DIVAKAR</span>
             <h2 style={{ fontSize: '2.0rem', marginTop: '6px' }}>{pageTitle}</h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginTop: '4px' }}>{pageSubtitle}</p>
           </div>
