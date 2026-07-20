@@ -997,11 +997,36 @@ p {
   transform: translateX(4px);
 }
 
-/* 3D Tilt & Shiny Glare Effects */
+/* 3D Tilt, Shiny Glare & Cyber Corner HUD Marks */
 .glass-card, .project-card {
   position: relative;
   transition: transform 0.15s ease-out, box-shadow 0.3s, border-color 0.3s;
   transform-style: preserve-3d;
+}
+
+/* Cyber HUD floating corner ticks via single pseudo-element */
+.glass-card::before, .project-card::before {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border: 1.5px solid var(--accent-gold);
+  border-radius: inherit;
+  clip-path: polygon(
+    0 0, 12px 0, 12px 1.5px, 1.5px 1.5px, 1.5px 12px, 0 12px,
+    0 100%, 12px 100%, 12px calc(100% - 1.5px), 1.5px calc(100% - 1.5px), 1.5px calc(100% - 12px), 0 calc(100% - 12px),
+    100% 100%, calc(100% - 12px) 100%, calc(100% - 12px) calc(100% - 1.5px), calc(100% - 1.5px) calc(100% - 1.5px), calc(100% - 1.5px) calc(100% - 12px), 100% calc(100% - 12px),
+    100% 0, calc(100% - 12px) 0, calc(100% - 12px) 1.5px, calc(100% - 1.5px) 1.5px, calc(100% - 1.5px) 12px, 100% 12px
+  );
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s, transform 0.4s;
+  transform: scale(0.97);
+  z-index: 5;
+}
+
+.glass-card:hover::before, .project-card:hover::before {
+  opacity: 0.5;
+  transform: scale(1);
 }
 
 .glass-card::after, .project-card::after {
@@ -1049,5 +1074,27 @@ p {
     background-position: -200% center;
   }
 }
+
+/* Magic Sparkle Cursor Trail */
+.sparkle-particle {
+  position: fixed;
+  background: radial-gradient(circle, var(--accent-gold) 0%, rgba(189, 160, 122, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  animation: sparkleFade 0.8s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes sparkleFade {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--dx), var(--dy), 0) scale(0.15);
+  }
+}
+
 
 

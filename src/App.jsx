@@ -142,6 +142,42 @@ export default function App() {
     };
   }, []);
 
+  // Magic Sparkle Cursor Trail generator
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (window.innerWidth < 768) return;
+      
+      const particle = document.createElement('div');
+      particle.className = 'sparkle-particle';
+      
+      const size = Math.random() * 4 + 3;
+      particle.style.width = `${size}px`;
+      particle.style.height = `${size}px`;
+      
+      particle.style.left = `${e.clientX}px`;
+      particle.style.top = `${e.clientY}px`;
+      
+      const angle = Math.random() * Math.PI * 2;
+      const speed = Math.random() * 40 + 20;
+      const dx = Math.cos(angle) * speed;
+      const dy = Math.sin(angle) * speed;
+      
+      particle.style.setProperty('--dx', `${dx}px`);
+      particle.style.setProperty('--dy', `${dy}px`);
+      
+      document.body.appendChild(particle);
+      
+      setTimeout(() => {
+        particle.remove();
+      }, 800);
+    };
+    
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
   // 3D Interactive Card Tilt & Glare Refraction effect
   useEffect(() => {
     const cards = document.querySelectorAll('.glass-card, .project-card');
