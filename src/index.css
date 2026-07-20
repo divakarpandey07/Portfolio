@@ -1096,5 +1096,45 @@ p {
   }
 }
 
+/* Magic Click Ripple & Sparkle Burst Effects */
+.click-ripple {
+  position: fixed;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--accent-gold);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-50%, -50%) scale(1);
+  animation: rippleGrow 0.6s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes rippleGrow {
+  to {
+    transform: translate(-50%, -50%) scale(4);
+    opacity: 0;
+  }
+}
+
+.click-burst-particle {
+  position: fixed;
+  width: 4px;
+  height: 4px;
+  background: var(--accent-gold);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+  animation: burstMove 0.6s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes burstMove {
+  to {
+    transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.1);
+    opacity: 0;
+  }
+}
+
+
 
 

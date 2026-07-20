@@ -178,6 +178,42 @@ export default function App() {
     };
   }, []);
 
+  // Magic Click Ripple & Sparkle Burst effect
+  useEffect(() => {
+    const handleClick = (e) => {
+      const ripple = document.createElement('div');
+      ripple.className = 'click-ripple';
+      ripple.style.left = `${e.clientX}px`;
+      ripple.style.top = `${e.clientY}px`;
+      document.body.appendChild(ripple);
+      
+      for (let i = 0; i < 6; i++) {
+        const p = document.createElement('div');
+        p.className = 'click-burst-particle';
+        p.style.left = `${e.clientX}px`;
+        p.style.top = `${e.clientY}px`;
+        
+        const angle = (i / 6) * Math.PI * 2;
+        const velocity = 35 + Math.random() * 20;
+        const dx = Math.cos(angle) * velocity;
+        const dy = Math.sin(angle) * velocity;
+        
+        p.style.setProperty('--dx', `${dx}px`);
+        p.style.setProperty('--dy', `${dy}px`);
+        document.body.appendChild(p);
+        
+        setTimeout(() => p.remove(), 600);
+      }
+      
+      setTimeout(() => ripple.remove(), 600);
+    };
+    
+    window.addEventListener('click', handleClick);
+    return () => {
+      window.removeEventListener('click', handleClick);
+    };
+  }, []);
+
   // 3D Interactive Card Tilt & Glare Refraction effect
   useEffect(() => {
     const cards = document.querySelectorAll('.glass-card, .project-card');
