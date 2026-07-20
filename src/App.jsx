@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import ThreeScene from './ThreeScene';
 import Lenis from 'lenis';
 
+
 const SECTIONS = [
   { id: 'hero', label: 'Home' },
   { id: 'education-skills', label: 'Education & Skills' },

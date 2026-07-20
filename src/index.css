@@ -97,6 +97,8 @@ body::-webkit-scrollbar-thumb {
   opacity: 0.8;
 }
 
+
+
 /* Custom cursor follower */
 .cursor-follower {
   position: fixed;
