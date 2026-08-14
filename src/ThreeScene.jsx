@@ -4,7 +4,6 @@ import * as THREE from 'three';
 import { useGLTF, Environment } from '@react-three/drei';
 
 // Predefined camera checkpoints (Position & Target LookAt) for cinematic sweeps
-// Sweeping around a central abstract compute structure
 const KEYFRAMES = [
   {
     progress: 0.0,
@@ -33,7 +32,6 @@ const KEYFRAMES = [
   }
 ];
 
-// Helper to interpolate between two keyframes based on current progress
 function getInterpolatedState(progress) {
   const p = Math.min(Math.max(progress, 0), 1);
   
@@ -48,7 +46,7 @@ function getInterpolatedState(progress) {
   const start = KEYFRAMES[startIndex];
   const end = KEYFRAMES[startIndex + 1];
   
-  const segmentDuration = end.progress - start.progress;
+  const segmentDuration = Math.max(end.progress - start.progress, 0.0001);
   const segmentProgress = (p - start.progress) / segmentDuration;
   
   const eased = segmentProgress < 0.5 
@@ -70,7 +68,6 @@ function getInterpolatedState(progress) {
   return { pos, target };
 }
 
-// Loads the user-supplied 3D room model
 function Model({ src }) {
   const { scene } = useGLTF(src);
   
@@ -89,42 +86,42 @@ function Model({ src }) {
   return <primitive object={scene} position={[0, -0.8, 0]} rotation={[0, -Math.PI / 4, 0]} dispose={null} />;
 }
 
-// Styled Mock Abstract Computing Core - serving as high-fidelity visual fallback
+// High-fidelity futuristic abstract exhibition core
 function ProceduralMockRoom() {
   const blobRef = useRef();
-  const glassPanelsRef = useRef();
+  const ring1Ref = useRef();
+  const ring2Ref = useRef();
   const pointsRef = useRef();
   const bitsRef = useRef([]);
 
-  const originalPositions = useRef(null);
-  const particleCount = 350;
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const particleCount = isMobile ? 180 : 380;
 
-  // Initialize particles
+  // Initialize particle points
   const [positions, velocities] = useMemo(() => {
     const pos = new Float32Array(particleCount * 3);
     const vel = new Float32Array(particleCount * 3);
     for (let i = 0; i < particleCount; i++) {
-      const angle = (i / particleCount) * Math.PI * 2 * 12;
-      const radius = 1.0 + Math.random() * 3.5;
-      const height = (Math.random() - 0.5) * 5.0;
+      const angle = (i / particleCount) * Math.PI * 2 * 8;
+      const radius = 1.2 + Math.random() * 3.2;
+      const height = (Math.random() - 0.5) * 4.5;
       pos[i * 3] = Math.cos(angle) * radius;
       pos[i * 3 + 1] = height;
       pos[i * 3 + 2] = Math.sin(angle) * radius;
-      vel[i * 3] = 0.08 + Math.random() * 0.15;
+      vel[i * 3] = 0.06 + Math.random() * 0.12;
     }
     return [pos, vel];
-  }, []);
+  }, [particleCount]);
 
-  // Only 12 floating CS bits (lightweight)
   const csBits = useMemo(() => {
     return Array.from({ length: 12 }).map((_, i) => {
       const angle = (i / 12) * Math.PI * 2;
-      const radius = 2.0 + Math.random() * 1.8;
+      const radius = 2.2 + Math.random() * 1.5;
       return {
         isZero: i % 2 === 0,
-        pos: [Math.cos(angle) * radius, 0.4 + Math.random() * 2.2, Math.sin(angle) * radius],
-        color: i % 3 === 0 ? '#bda07a' : i % 3 === 1 ? '#00f0ff' : '#007fff',
-        speed: 0.15 + Math.random() * 0.25,
+        pos: [Math.cos(angle) * radius, 0.3 + Math.random() * 2.0, Math.sin(angle) * radius],
+        color: i % 3 === 0 ? '#bda07a' : i % 3 === 1 ? '#00f0ff' : '#6b9080',
+        speed: 0.15 + Math.random() * 0.2,
         phase: Math.random() * Math.PI
       };
     });
@@ -133,23 +130,28 @@ function ProceduralMockRoom() {
   useFrame((state, delta) => {
     const time = state.clock.getElapsedTime();
 
-    // 1. Hardware-accelerated organic transformations on central sphere (Zero CPU cost)
     if (blobRef.current) {
-      // Rotate the sphere organically
-      blobRef.current.rotation.y += delta * 0.15;
-      blobRef.current.rotation.x = Math.sin(time * 0.4) * 0.12;
-      
-      // Organically pulsate scale (simulating organic liquid expansion/contraction)
-      const scaleWave = 1.0 + Math.sin(time * 1.5) * 0.06;
+      blobRef.current.rotation.y += delta * 0.12;
+      blobRef.current.rotation.x = Math.sin(time * 0.3) * 0.1;
+      const scaleWave = 1.0 + Math.sin(time * 1.2) * 0.04;
       blobRef.current.scale.set(scaleWave, scaleWave, scaleWave);
     }
 
-    // 2. Animate 600 particle swarm along trigonometric flow field vortex + mouse interaction (Optimized)
+    if (ring1Ref.current) {
+      ring1Ref.current.rotation.x = time * 0.25;
+      ring1Ref.current.rotation.y = time * 0.18;
+    }
+
+    if (ring2Ref.current) {
+      ring2Ref.current.rotation.z = time * -0.2;
+      ring2Ref.current.rotation.x = time * 0.15;
+    }
+
     if (pointsRef.current) {
       const posAttr = pointsRef.current.geometry.attributes.position;
       const arr = posAttr.array;
-      const mouseX = (window.mx || 0) * 4.0;
-      const mouseY = (window.my || 0) * 3.0;
+      const mouseX = (window.mx || 0) * 3.5;
+      const mouseY = (window.my || 0) * 2.5;
 
       for (let i = 0; i < particleCount; i++) {
         const xIdx = i * 3;
@@ -160,27 +162,24 @@ function ProceduralMockRoom() {
         let py = arr[yIdx];
         let pz = arr[zIdx];
 
-        // Wave vortex movement formulas
-        py += velocities[i * 3] * delta * 4;
-        px += Math.sin(time * 0.4 + py * 0.8 + i) * 0.25 * delta;
-        pz += Math.cos(time * 0.4 + px * 0.8 + i) * 0.25 * delta;
+        py += velocities[i * 3] * delta * 3.5;
+        px += Math.sin(time * 0.3 + py * 0.6 + i) * 0.18 * delta;
+        pz += Math.cos(time * 0.3 + px * 0.6 + i) * 0.18 * delta;
 
-        // Dynamic mouse repulsion logic (Optimized using distance squared check)
         const dx = px - mouseX;
         const dy = py - mouseY;
         const distSq = dx * dx + dy * dy;
-        if (distSq < 1.96) { // 1.4^2 = 1.96
+        if (distSq < 1.8) {
           const dist = Math.sqrt(distSq);
-          const force = (1.4 - dist) * 0.6;
-          px += (dx / (dist || 0.001)) * force * delta * 6;
-          py += (dy / (dist || 0.001)) * force * delta * 6;
+          const force = (1.35 - dist) * 0.5;
+          px += (dx / (dist || 0.001)) * force * delta * 5;
+          py += (dy / (dist || 0.001)) * force * delta * 5;
         }
 
-        // Reset if moving out of boundary
-        if (py > 3.0) {
-          py = -2.5;
+        if (py > 2.8) {
+          py = -2.2;
           const angle = Math.random() * Math.PI * 2;
-          const radius = 1.0 + Math.random() * 3.0;
+          const radius = 1.2 + Math.random() * 2.8;
           px = Math.cos(angle) * radius;
           pz = Math.sin(angle) * radius;
         }
@@ -192,44 +191,45 @@ function ProceduralMockRoom() {
       posAttr.needsUpdate = true;
     }
 
-    // 3. Float and spin coding bits (0s and 1s wireframes)
     bitsRef.current.forEach((mesh, i) => {
       if (mesh) {
         const config = csBits[i];
-        mesh.position.y = config.pos[1] + Math.sin(time * config.speed + config.phase) * 0.15;
-        mesh.rotation.y += delta * 0.4;
-        mesh.rotation.x += delta * 0.2;
+        mesh.position.y = config.pos[1] + Math.sin(time * config.speed + config.phase) * 0.12;
+        mesh.rotation.y += delta * 0.3;
+        mesh.rotation.x += delta * 0.15;
       }
     });
-
-    // 4. Float refractive glass panels
-    if (glassPanelsRef.current) {
-      glassPanelsRef.current.children.forEach((panel, index) => {
-        panel.rotation.y = time * 0.05 + index * 0.5;
-        panel.rotation.x = Math.sin(time * 0.03 + index) * 0.1;
-        panel.position.y = (index === 0 ? 1.2 : index === 1 ? 1.5 : 0.9) + Math.sin(time * 0.2 + index) * 0.06;
-      });
-    }
   });
 
   return (
-    <group position={[0, -0.6, 0]} rotation={[0, -Math.PI / 4, 0]}>
-      {/* Simplified Grid Floor */}
-      <gridHelper args={[14, 14, '#00f0ff', '#0b162a']} position={[0, -0.05, 0]} />
-      
-      {/* Central Sphere - using MeshStandardMaterial (much faster than MeshPhysicalMaterial) */}
+    <group position={[0, -0.5, 0]} rotation={[0, -Math.PI / 4, 0]}>
+      {/* Floor Cyber Grid */}
+      <gridHelper args={[16, 16, '#bda07a', '#0a101d']} position={[0, -0.1, 0]} />
+
+      {/* Central Cyber Sphere */}
       <mesh ref={blobRef} position={[0, 0.8, 0]}>
-        <sphereGeometry args={[1.35, 20, 20]} />
+        <sphereGeometry args={[1.25, 24, 24]} />
         <meshStandardMaterial
-          color="#001a35"
-          emissive="#020c1b"
-          roughness={0.05}
-          metalness={0.95}
-          envMapIntensity={1.5}
+          color="#040914"
+          emissive="#061224"
+          roughness={0.1}
+          metalness={0.9}
+          wireframe={false}
         />
       </mesh>
-      
-      {/* Optimized Particle Swarm - 350 particles */}
+
+      {/* Orbital Gold Gyroscope Rings */}
+      <mesh ref={ring1Ref} position={[0, 0.8, 0]}>
+        <torusGeometry args={[1.75, 0.015, 12, 48]} />
+        <meshStandardMaterial color="#bda07a" emissive="#bda07a" emissiveIntensity={0.8} />
+      </mesh>
+
+      <mesh ref={ring2Ref} position={[0, 0.8, 0]}>
+        <torusGeometry args={[2.1, 0.012, 12, 48]} />
+        <meshStandardMaterial color="#00f0ff" emissive="#00f0ff" emissiveIntensity={0.6} />
+      </mesh>
+
+      {/* Particle Swarm */}
       <points ref={pointsRef}>
         <bufferGeometry>
           <bufferAttribute
@@ -238,17 +238,17 @@ function ProceduralMockRoom() {
           />
         </bufferGeometry>
         <pointsMaterial
-          size={0.05}
+          size={0.045}
           color="#e8d3b9"
           transparent
-          opacity={0.7}
+          opacity={0.65}
           blending={THREE.AdditiveBlending}
           depthWrite={false}
           sizeAttenuation
         />
       </points>
 
-      {/* Lightweight Floating CS Bits - reduced to 12 */}
+      {/* Floating CS Bits */}
       {csBits.map((bit, idx) => (
         <mesh
           key={idx}
@@ -264,9 +264,9 @@ function ProceduralMockRoom() {
             color={bit.color}
             wireframe
             emissive={bit.color}
-            emissiveIntensity={1.5}
+            emissiveIntensity={1.2}
             transparent
-            opacity={0.65}
+            opacity={0.6}
           />
         </mesh>
       ))}
@@ -274,7 +274,6 @@ function ProceduralMockRoom() {
   );
 }
 
-// Rig updates the camera position/rotation dynamically based on scroll & mouse variables
 function CameraRig({ scrollProgress }) {
   const { camera } = useThree();
   const currentPos = useRef(new THREE.Vector3(0, 2, 7));
@@ -282,35 +281,29 @@ function CameraRig({ scrollProgress }) {
   const prevScroll = useRef(0);
   const currentRoll = useRef(0);
 
-  useFrame((state, delta) => {
+  useFrame(() => {
     const { pos: targetPos, target: targetLookAt } = getInterpolatedState(scrollProgress);
 
-    // Interactive mouse drift (Parallax)
     const mx = window.mx || 0;
     const my = window.my || 0;
     
-    const driftX = mx * 0.45;
-    const driftY = my * 0.35;
+    const driftX = mx * 0.4;
+    const driftY = my * 0.3;
 
-    const finalTargetPos = targetPos.clone().add(new THREE.Vector3(driftX * 0.35, driftY * 0.35, 0));
+    const finalTargetPos = targetPos.clone().add(new THREE.Vector3(driftX * 0.3, driftY * 0.3, 0));
     const finalLookAt = targetLookAt.clone().add(new THREE.Vector3(driftX, driftY, 0));
 
-    // Smooth inertia lerp
-    currentPos.current.lerp(finalTargetPos, 0.045); // highly smooth damping
+    currentPos.current.lerp(finalTargetPos, 0.045);
     currentTarget.current.lerp(finalLookAt, 0.045);
 
-    // Calculate drone Z-roll from scroll velocity
     const scrollDiff = scrollProgress - prevScroll.current;
     prevScroll.current = scrollProgress;
     
-    const targetRoll = -scrollDiff * 2.2;
+    const targetRoll = -scrollDiff * 2.0;
     currentRoll.current = THREE.MathUtils.lerp(currentRoll.current, targetRoll, 0.07);
 
-    // Set camera transform
     camera.position.copy(currentPos.current);
     camera.lookAt(currentTarget.current);
-
-    // Add Z-axis tilt
     camera.rotateOnAxis(new THREE.Vector3(0, 0, 1), currentRoll.current);
   });
 
@@ -320,7 +313,6 @@ function CameraRig({ scrollProgress }) {
 export default function ThreeScene({ modelPath = '/model.glb', scrollProgress = 0 }) {
   const [modelExists, setModelExists] = useState(false);
 
-  // Check if model.glb actually exists in the public directory
   useEffect(() => {
     let mounted = true;
     (async () => {
@@ -346,7 +338,7 @@ export default function ThreeScene({ modelPath = '/model.glb', scrollProgress = 
         } else {
           if (mounted) setModelExists(false);
         }
-      } catch (e) {
+      } catch {
         if (mounted) setModelExists(false);
       }
     })();
@@ -360,22 +352,20 @@ export default function ThreeScene({ modelPath = '/model.glb', scrollProgress = 
       <Canvas
         camera={{ fov: 45, near: 0.1, far: 100 }}
         gl={{
-          antialias: false, // Disable anti-aliasing for big perf boost
+          antialias: false,
           toneMapping: THREE.ACESFilmicToneMapping,
           outputColorSpace: THREE.SRGBColorSpace,
           powerPreference: 'high-performance',
         }}
-        dpr={[1, 1.5]} // Cap pixel ratio to 1.5 max (prevents 4K render on retina)
+        dpr={[1, 1.5]}
       >
         <color attach="background" args={['#020205']} />
         
-        {/* Simplified lighting - no expensive shadows */}
-        <ambientLight intensity={0.35} color="#0d1f3d" />
+        <ambientLight intensity={0.4} color="#0d1f3d" />
         <pointLight position={[6, 8, 6]} intensity={1.8} color="#00f0ff" />
-        <pointLight position={[-6, 4, -6]} intensity={1.2} color="#ff007f" />
-        <pointLight position={[0, 10, 4]} intensity={2.0} color="#e8d3b9" />
+        <pointLight position={[-6, 4, -6]} intensity={1.2} color="#bda07a" />
+        <pointLight position={[0, 10, 4]} intensity={2.2} color="#e8d3b9" />
 
-        {/* Background Environment map for dark metallic reflections */}
         <Suspense fallback={null}>
           <Environment preset="night" />
         </Suspense>
