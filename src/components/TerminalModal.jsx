@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 export default function TerminalModal({ isOpen, onClose, onNavigate, onDownloadCV, onShowToast }) {
   const [history, setHistory] = useState([
     { type: 'system', text: 'Divakar Pandey Cyber Terminal v2.4.0 [x86_64-lpu-linux]' },
-    { type: 'system', text: 'Type "help" to see available commands or "projects" to list work.' }
+    { type: 'system', text: 'Type "help" to see available commands, "projects" for works, or "certificates" for certs.' }
   ]);
   const [input, setInput] = useState('');
   const [cmdIndex, setCmdIndex] = useState(-1);
@@ -23,7 +23,7 @@ export default function TerminalModal({ isOpen, onClose, onNavigate, onDownloadC
 
   const handleCommand = (e) => {
     if (e.key === 'Enter') {
-      const trimmed = input.trim().toLowerCase();
+      const trimmed = input.trim().toLowerCase().replace(/\s+/g, ' ');
       const newHistory = [...history, { type: 'user', text: input }];
 
       if (trimmed) {
@@ -36,47 +36,111 @@ export default function TerminalModal({ isOpen, onClose, onNavigate, onDownloadC
           newHistory.push({
             type: 'output',
             text: `Available Commands:
-  • help          : Display this command list
-  • about         : Brief developer summary & philosophy
-  • skills        : List technical skills and core proficiencies
-  • projects      : List top featured engineering projects
-  • resume / cv   : Download Divakar's official Resume (PDF)
-  • contact       : Display email, phone and LinkedIn info
-  • github        : Open GitHub profile
-  • clear         : Clear terminal screen
-  • exit / close  : Close the terminal`
+  • help                 : Display this command list
+  • about                : Developer biography & engineering philosophy
+  • skills               : List technical stack & core competencies
+  • projects / work      : List top featured engineering projects
+  • certificates / certs : List all 7 certifications, hackathons & events
+  • education / edu      : List full academic degrees & universities
+  • resume / cv          : Download Divakar's official Resume (PDF)
+  • contact / email      : Display email, phone and LinkedIn info
+  • github               : Open GitHub profile in new tab
+  • clear / cls          : Clear terminal screen
+  • exit / close         : Close terminal`
           });
           break;
 
         case 'about':
+        case 'bio':
           newHistory.push({
             type: 'output',
-            text: 'Divakar Pandey: Full-Stack Engineer & MCA candidate at LPU. Specializing in AI governance portals (digital-pateri), mobile cryptography (NightShield), and IoT embedded architectures.'
+            text: 'Divakar Pandey: Full-Stack Engineer & MCA candidate at Lovely Professional University. Specializing in AI governance portals (digital-pateri), mobile cryptography (NightShield), and IoT embedded architectures.'
           });
           break;
 
         case 'skills':
+        case 'tech':
+        case 'stack':
           newHistory.push({
             type: 'output',
-            text: `Technical Stack:
+            text: `Technical Arsenal:
   [Languages]   : JavaScript, TypeScript, Java, Python, C++, PHP, SQL
   [Frontend]    : React.js, Vite, Three.js, TailwindCSS, HTML5, CSS3
   [Backend/DB]  : Node.js, Express, MongoDB, MySQL, Firebase
-  [AI / ML]     : Google Gemini API, Scikit-Learn, Pandas, NumPy
-  [IoT / Tools] : ESP32, NodeMCU, Git, GitHub, Linux, Android Studio`
+  [AI / ML]     : Google Gemini AI API, Scikit-Learn, Pandas, NumPy
+  [IoT / Tools] : ESP32, NodeMCU ESP8266, Git, GitHub, Linux, Android Studio`
           });
           break;
 
         case 'projects':
+        case 'project':
+        case 'work':
+        case 'portfolio':
           newHistory.push({
             type: 'output',
-            text: `Top Featured Works:
+            text: `Featured Engineering Works:
   1. digital-pateri      [React, Node, Mongo, Gemini AI] -> Smart Gram Panchayat Portal
-  2. BharatYatra         [TypeScript, React, Vercel]     -> Interactive Travel Platform
-  3. NightShield         [Java, Android, AES-256]        -> Cryptographic Chat App
+  2. BharatYatra         [TypeScript, React, Vercel]     -> Interactive Travel Planning
+  3. NightShield         [Java, Android, AES-256]        -> Cryptographic Instant Messaging
   4. IoT Digital Class   [ESP32, NodeMCU, C++, Sensors]  -> Automated Smart Classroom
-  5. Carbon-Tracker      [React, Chart.js, Tailwind]     -> Climate Emission Analytics
-  6. CyberGuard          [Python, Scikit-Learn, ML]      -> Network Intrusion Detector`
+  5. Carbon-Tracker      [React, Chart.js, Tailwind]     -> Climate Footprint Analytics
+  6. CyberGuard          [Python, Scikit-Learn, ML]      -> Network Intrusion Detector
+  7. Saanidhya           [PHP, MySQL, JavaScript]        -> Student PG & Housing Finder
+  8. PeriodicTable       [HTML5, CSS3, JavaScript]       -> Interactive Chemistry Tool`
+          });
+          break;
+
+        case 'certificates':
+        case 'certificate':
+        case 'certifications':
+        case 'certification':
+        case 'certs':
+        case 'cert':
+        case 'certificates and more':
+        case 'certificates & more':
+        case 'certifications and more':
+        case 'certifications & more':
+        case 'certs and more':
+        case 'certs & more':
+          newHistory.push({
+            type: 'output',
+            text: `Certificates and More (7 Recognitions & Hackathons):
+  1. Modern Technology & Industry-Relevant Careers Workshop (May 2026)
+     -> Skillspardha Participant: High-end DevOps & Cloud Standards
+  2. Java Programming Certification (Feb - May 2026)
+     -> NEO COLAB (NIIT Venture): Multi-threading & Memory Architectures
+  3. InnoStart 2025 Innovation Event (Nov 2025)
+     -> LPU School of Computer Applications: Prototype Presenter
+  4. MSME InnovXperience Exhibition (Oct 2025)
+     -> Participant: LPU Startup & Enterprise Cell
+  5. AI Agents & The Future of Jobs - Founder's Talk (Sep 2025)
+     -> Capabl / Infoity / DSO Participant: Automated Workflow & LLMs
+  6. Tech Blitz 2025 - 24Hr Hackathon (Sep 2025)
+     -> Coding Ninjas, LPU: Overnight Full-Stack Prototype
+  7. Honored for Technical Contributions (Aug 2025)
+     -> Recognized for organizational & technical student initiatives`
+          });
+          break;
+
+        case 'education':
+        case 'edu':
+        case 'academic':
+        case 'degrees':
+        case 'college':
+        case 'university':
+          newHistory.push({
+            type: 'output',
+            text: `Academic Timeline:
+  • 2025 - Present : Lovely Professional University
+                     Master of Computer Applications (MCA) — CGPA: 7.36
+  • 2023 - 2025    : NIELIT (Varanasi, UP)
+                     O Level Computing Certificate
+  • 2022 - 2025    : Veer Bahadur Singh Purvanchal University
+                     Bachelor of Computer Applications (BCA) — 70%
+  • 2021 - 2022    : Mahatma Gandhi Kashi Vidyapith
+                     PGDCA (Post Graduate Diploma in Computer Applications) — 56%
+  • 2019 - 2021    : Mahatma Gandhi Kashi Vidyapith
+                     Bachelor of Science (B.Sc.) — 60%`
           });
           break;
 
@@ -87,6 +151,8 @@ export default function TerminalModal({ isOpen, onClose, onNavigate, onDownloadC
           break;
 
         case 'contact':
+        case 'email':
+        case 'phone':
           newHistory.push({
             type: 'output',
             text: `Contact Channels:
@@ -98,17 +164,22 @@ export default function TerminalModal({ isOpen, onClose, onNavigate, onDownloadC
           break;
 
         case 'github':
+        case 'git':
+        case 'repo':
           window.open('https://github.com/divakarpandey07', '_blank');
           newHistory.push({ type: 'success', text: 'Opening GitHub profile in new tab...' });
           break;
 
         case 'clear':
+        case 'cls':
           setHistory([]);
           setInput('');
           return;
 
         case 'exit':
         case 'close':
+        case 'quit':
+        case 'q':
           onClose();
           return;
 
