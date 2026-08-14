@@ -2,7 +2,6 @@ import React, { useRef, useMemo } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 
-// Predefined camera checkpoints for 6 sections
 const KEYFRAMES = [
   { progress: 0.0, pos: [0, 2.0, 7.0], target: [0, 0.2, 0] },
   { progress: 0.2, pos: [-3.8, 1.4, 4.2], target: [0.0, 0.4, 0.0] },
@@ -48,7 +47,6 @@ function getInterpolatedState(progress) {
   return { pos, target };
 }
 
-// 100% Local, Crash-Proof Procedural Cyber Core
 function ProceduralMockRoom() {
   const blobRef = useRef();
   const ring1Ref = useRef();
@@ -57,7 +55,7 @@ function ProceduralMockRoom() {
   const bitsRef = useRef([]);
 
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-  const particleCount = isMobile ? 120 : 250;
+  const particleCount = isMobile ? 35 : 200;
 
   const [positions, velocities] = useMemo(() => {
     const pos = new Float32Array(particleCount * 3);
@@ -75,8 +73,9 @@ function ProceduralMockRoom() {
   }, [particleCount]);
 
   const csBits = useMemo(() => {
-    return Array.from({ length: 8 }).map((_, i) => {
-      const angle = (i / 8) * Math.PI * 2;
+    const count = isMobile ? 4 : 8;
+    return Array.from({ length: count }).map((_, i) => {
+      const angle = (i / count) * Math.PI * 2;
       const radius = 2.0 + Math.random() * 1.2;
       return {
         isZero: i % 2 === 0,
@@ -86,18 +85,15 @@ function ProceduralMockRoom() {
         phase: Math.random() * Math.PI
       };
     });
-  }, []);
+  }, [isMobile]);
 
   useFrame((state, rawDelta) => {
-    // Clamp delta to prevent NaN explosions on tab unfocus
     const delta = Math.min(rawDelta, 0.05);
     const time = state.clock.getElapsedTime();
 
     if (blobRef.current) {
       blobRef.current.rotation.y += delta * 0.12;
       blobRef.current.rotation.x = Math.sin(time * 0.3) * 0.1;
-      const scaleWave = 1.0 + Math.sin(time * 1.2) * 0.03;
-      blobRef.current.scale.set(scaleWave, scaleWave, scaleWave);
     }
 
     if (ring1Ref.current) {
@@ -110,7 +106,7 @@ function ProceduralMockRoom() {
       ring2Ref.current.rotation.x = time * 0.12;
     }
 
-    if (pointsRef.current && pointsRef.current.geometry?.attributes?.position) {
+    if (!isMobile && pointsRef.current && pointsRef.current.geometry?.attributes?.position) {
       const posAttr = pointsRef.current.geometry.attributes.position;
       const arr = posAttr.array;
       const mouseX = (window.mx || 0) * 3.0;
@@ -124,12 +120,6 @@ function ProceduralMockRoom() {
         let px = arr[xIdx];
         let py = arr[yIdx];
         let pz = arr[zIdx];
-
-        if (isNaN(px) || isNaN(py) || isNaN(pz)) {
-          px = (Math.random() - 0.5) * 4;
-          py = (Math.random() - 0.5) * 4;
-          pz = (Math.random() - 0.5) * 4;
-        }
 
         py += velocities[i * 3] * delta * 2.5;
         px += Math.sin(time * 0.3 + py * 0.5 + i) * 0.12 * delta;
@@ -161,13 +151,10 @@ function ProceduralMockRoom() {
     }
 
     bitsRef.current.forEach((mesh, i) => {
-      if (mesh) {
+      if (mesh && csBits[i]) {
         const config = csBits[i];
-        if (config) {
-          mesh.position.y = config.pos[1] + Math.sin(time * config.speed + config.phase) * 0.12;
-          mesh.rotation.y += delta * 0.3;
-          mesh.rotation.x += delta * 0.15;
-        }
+        mesh.position.y = config.pos[1] + Math.sin(time * config.speed + config.phase) * 0.12;
+        mesh.rotation.y += delta * 0.3;
       }
     });
   });
@@ -177,7 +164,7 @@ function ProceduralMockRoom() {
       <gridHelper args={[16, 16, '#bda07a', '#0a101d']} position={[0, -0.1, 0]} />
 
       <mesh ref={blobRef} position={[0, 0.8, 0]}>
-        <sphereGeometry args={[1.2, 24, 24]} />
+        <sphereGeometry args={[1.2, isMobile ? 14 : 22, isMobile ? 14 : 22]} />
         <meshStandardMaterial
           color="#040914"
           emissive="#061224"
@@ -187,12 +174,12 @@ function ProceduralMockRoom() {
       </mesh>
 
       <mesh ref={ring1Ref} position={[0, 0.8, 0]}>
-        <torusGeometry args={[1.75, 0.015, 10, 36]} />
+        <torusGeometry args={[1.75, 0.015, 8, isMobile ? 24 : 36]} />
         <meshStandardMaterial color="#bda07a" emissive="#bda07a" emissiveIntensity={0.8} />
       </mesh>
 
       <mesh ref={ring2Ref} position={[0, 0.8, 0]}>
-        <torusGeometry args={[2.1, 0.012, 10, 36]} />
+        <torusGeometry args={[2.1, 0.012, 8, isMobile ? 24 : 36]} />
         <meshStandardMaterial color="#00f0ff" emissive="#00f0ff" emissiveIntensity={0.6} />
       </mesh>
 
@@ -204,7 +191,7 @@ function ProceduralMockRoom() {
           />
         </bufferGeometry>
         <pointsMaterial
-          size={0.045}
+          size={isMobile ? 0.06 : 0.045}
           color="#e8d3b9"
           transparent
           opacity={0.6}
@@ -221,7 +208,7 @@ function ProceduralMockRoom() {
           position={bit.pos}
         >
           {bit.isZero ? (
-            <sphereGeometry args={[0.06, 6, 6]} />
+            <sphereGeometry args={[0.06, 4, 4]} />
           ) : (
             <boxGeometry args={[0.08, 0.08, 0.08]} />
           )}
@@ -252,20 +239,20 @@ function CameraRig({ scrollProgress }) {
     const mx = window.mx || 0;
     const my = window.my || 0;
     
-    const driftX = mx * 0.3;
-    const driftY = my * 0.2;
+    const driftX = mx * 0.25;
+    const driftY = my * 0.15;
 
     const finalTargetPos = targetPos.clone().add(new THREE.Vector3(driftX * 0.3, driftY * 0.3, 0));
     const finalLookAt = targetLookAt.clone().add(new THREE.Vector3(driftX, driftY, 0));
 
-    currentPos.current.lerp(finalTargetPos, 0.045);
-    currentTarget.current.lerp(finalLookAt, 0.045);
+    currentPos.current.lerp(finalTargetPos, 0.06);
+    currentTarget.current.lerp(finalLookAt, 0.06);
 
     const scrollDiff = scrollProgress - prevScroll.current;
     prevScroll.current = scrollProgress;
     
     const targetRoll = -scrollDiff * 1.5;
-    currentRoll.current = THREE.MathUtils.lerp(currentRoll.current, targetRoll, 0.07);
+    currentRoll.current = THREE.MathUtils.lerp(currentRoll.current, targetRoll, 0.08);
 
     camera.position.copy(currentPos.current);
     camera.lookAt(currentTarget.current);
@@ -276,15 +263,17 @@ function CameraRig({ scrollProgress }) {
 }
 
 export default function ThreeScene({ scrollProgress = 0 }) {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+
   return (
-    <div style={{ width: '100%', height: '100%' }}>
+    <div style={{ width: '100%', height: '100%', pointerEvents: 'none' }}>
       <Canvas
         camera={{ fov: 45, near: 0.1, far: 100 }}
         gl={{
           antialias: false,
           powerPreference: 'high-performance',
         }}
-        dpr={[1, 1.5]}
+        dpr={isMobile ? 1.0 : [1, 1.25]}
       >
         <color attach="background" args={['#020205']} />
         

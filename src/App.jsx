@@ -234,32 +234,27 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Lenis Smooth Scroll
+  // Ultra-Fast Native Momentum Scroll for Mobile, Lenis for Desktop
   useEffect(() => {
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-      touchMultiplier: 1.4
-    });
+    const isTouch = typeof window !== 'undefined' && (
+      'ontouchstart' in window || 
+      navigator.maxTouchPoints > 0 || 
+      window.innerWidth <= 992
+    );
 
-    window.lenis = lenis;
-
+    let lenis = null;
     let rafId = 0;
-    function raf(time) {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
 
     const handleScrollUpdate = () => {
+      const scrollY = window.scrollY || document.documentElement.scrollTop || 0;
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
       if (totalHeight <= 0) return;
-      const progress = Math.min(Math.max(lenis.scroll / totalHeight, 0), 1);
+      
+      const progress = Math.min(Math.max(scrollY / totalHeight, 0), 1);
       setScrollProgress(progress);
       document.documentElement.style.setProperty('--scroll', String(progress));
 
-      const scrollPos = window.scrollY + window.innerHeight * 0.35;
+      const scrollPos = scrollY + window.innerHeight * 0.35;
       let currentSection = 'hero';
 
       Object.entries(sectionRefs).forEach(([id, ref]) => {
@@ -274,22 +269,48 @@ export default function App() {
       setActiveSection(currentSection);
     };
 
-    lenis.on('scroll', handleScrollUpdate);
+    if (!isTouch) {
+      // Desktop: Silk smooth wheel
+      lenis = new Lenis({
+        duration: 1.0,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        syncTouch: false,
+        touchMultiplier: 0
+      });
+      window.lenis = lenis;
+
+      function raf(time) {
+        lenis.raf(time);
+        rafId = requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+      lenis.on('scroll', handleScrollUpdate);
+    } else {
+      // Mobile: 100% Native 120Hz Hardware Momentum Scrolling with zero touch interception
+      window.addEventListener('scroll', handleScrollUpdate, { passive: true });
+    }
+
     setTimeout(handleScrollUpdate, 100);
 
     const handleResize = () => handleScrollUpdate();
-    window.addEventListener('resize', handleResize);
+    window.addEventListener('resize', handleResize, { passive: true });
 
     return () => {
-      cancelAnimationFrame(rafId);
-      lenis.destroy();
-      window.lenis = null;
+      if (rafId) cancelAnimationFrame(rafId);
+      if (lenis) {
+        lenis.destroy();
+        window.lenis = null;
+      }
+      window.removeEventListener('scroll', handleScrollUpdate);
       window.removeEventListener('resize', handleResize);
     };
   }, []);
 
-  // Mouse Move tracking for custom cursor and 3D parallax
+  // Mouse Move tracking for desktop cursor and 3D parallax
   useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth <= 768) return;
+
     let rafPending = false;
     let latestEvent = null;
 
@@ -337,7 +358,11 @@ export default function App() {
       setTimeout(() => {
         const targetRef = sectionRefs[id];
         if (targetRef && targetRef.current) {
-          window.lenis?.scrollTo(targetRef.current, { duration: 1.2 });
+          if (window.lenis) {
+            window.lenis.scrollTo(targetRef.current, { duration: 1.0 });
+          } else {
+            targetRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
         }
       }, 100);
       return;
@@ -347,7 +372,7 @@ export default function App() {
     if (targetRef && targetRef.current) {
       if (window.lenis) {
         window.lenis.scrollTo(targetRef.current, {
-          duration: 1.2,
+          duration: 1.0,
           easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
         });
       } else {
@@ -388,7 +413,7 @@ export default function App() {
 
   return (
     <>
-      {/* Floating Custom Cursor */}
+      {/* Floating Custom Cursor (Desktop only) */}
       <div
         className={`cursor-follower ${isHovering ? 'hovering' : ''}`}
         style={{ left: `${cursorPos.x}px`, top: `${cursorPos.y}px` }}
