@@ -1,14 +1,13 @@
 import React from 'react';
-import { IconHome, IconUser, IconZap, IconBriefcase, IconAward, IconMail, IconDocument, IconSearch } from './UiIcons';
 
 export default function MobileNav({ activeSection, onNavigate, onOpenCommandPalette }) {
   const navItems = [
-    { id: 'hero', label: 'Home', icon: <IconHome size={15} /> },
-    { id: 'about', label: 'About', icon: <IconUser size={15} /> },
-    { id: 'education-skills', label: 'Skills', icon: <IconZap size={15} /> },
-    { id: 'featured-projects', label: 'Work', icon: <IconBriefcase size={15} /> },
-    { id: 'certifications', label: 'Certs', icon: <IconAward size={15} /> },
-    { id: 'contact', label: 'Contact', icon: <IconMail size={15} /> },
+    { id: 'hero', label: 'Home' },
+    { id: 'about', label: 'About' },
+    { id: 'education-skills', label: 'Skills' },
+    { id: 'featured-projects', label: 'Work' },
+    { id: 'certifications', label: 'Certs' },
+    { id: 'contact', label: 'Contact' },
   ];
 
   return (
@@ -20,7 +19,6 @@ export default function MobileNav({ activeSection, onNavigate, onOpenCommandPale
           onClick={() => onNavigate(item.id)}
           aria-label={item.label}
         >
-          <span className="dock-icon">{item.icon}</span>
           <span className="dock-label">{item.label}</span>
         </button>
       ))}
@@ -37,7 +35,6 @@ export default function MobileNav({ activeSection, onNavigate, onOpenCommandPale
         }}
         aria-label="Download Resume"
       >
-        <span className="dock-icon"><IconDocument size={15} /></span>
         <span className="dock-label">CV</span>
       </button>
 
@@ -46,7 +43,6 @@ export default function MobileNav({ activeSection, onNavigate, onOpenCommandPale
         onClick={onOpenCommandPalette}
         aria-label="Search and Actions"
       >
-        <span className="dock-icon"><IconSearch size={15} /></span>
         <span className="dock-label">⌘K</span>
       </button>
     </nav>

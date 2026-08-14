@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { IconDocument, IconMail, IconAward, IconCode, IconBriefcase } from './UiIcons';
 
 export default function RecruiterPitchModal({ isOpen, onClose, onDownloadCV, onNavigateToContact }) {
   useEffect(() => {
@@ -37,10 +36,7 @@ export default function RecruiterPitchModal({ isOpen, onClose, onDownloadCV, onN
         <div className="pitch-grid">
           {/* Section 1: Academic & Readiness */}
           <div className="pitch-block">
-            <div className="pitch-block-title">
-              <IconAward size={14} style={{ marginRight: '6px', verticalAlign: 'middle' }} />
-              Education &amp; Academic Merit
-            </div>
+            <div className="pitch-block-title">Education &amp; Academic Merit</div>
             <div className="pitch-metric-row">
               <div className="pitch-stat">
                 <span className="p-stat-val">7.36</span>
@@ -59,10 +55,7 @@ export default function RecruiterPitchModal({ isOpen, onClose, onDownloadCV, onN
 
           {/* Section 2: Core Engineering Pillars */}
           <div className="pitch-block">
-            <div className="pitch-block-title">
-              <IconCode size={14} style={{ marginRight: '6px', verticalAlign: 'middle' }} />
-              Core Engineering Stack
-            </div>
+            <div className="pitch-block-title">Core Engineering Stack</div>
             <div className="pitch-tags-group">
               <span className="pitch-tag">React.js &amp; Vite</span>
               <span className="pitch-tag">Node.js / Express</span>
@@ -78,10 +71,7 @@ export default function RecruiterPitchModal({ isOpen, onClose, onDownloadCV, onN
 
         {/* Section 3: Top 3 Flagship Projects */}
         <div className="pitch-flagships">
-          <div className="pitch-block-title">
-            <IconBriefcase size={14} style={{ marginRight: '6px', verticalAlign: 'middle' }} />
-            Top 3 Flagship Engineering Works
-          </div>
+          <div className="pitch-block-title">Top 3 Flagship Engineering Works</div>
           <div className="pitch-projects-list">
             <div className="pitch-proj-item">
               <div className="pitch-proj-header">
@@ -124,7 +114,6 @@ export default function RecruiterPitchModal({ isOpen, onClose, onDownloadCV, onN
 
           <div className="pitch-actions">
             <button className="btn-primary" onClick={onDownloadCV}>
-              <IconDocument size={16} />
               <span>Download Official Resume (PDF)</span>
             </button>
             <button
@@ -134,7 +123,6 @@ export default function RecruiterPitchModal({ isOpen, onClose, onDownloadCV, onN
                 onNavigateToContact();
               }}
             >
-              <IconMail size={16} />
               <span>Schedule Interview / Contact</span>
             </button>
           </div>

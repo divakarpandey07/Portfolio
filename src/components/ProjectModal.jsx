@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { IconExternalLink, IconGitHub } from './UiIcons';
 
 export default function ProjectModal({ project, onClose }) {
   useEffect(() => {
@@ -59,7 +58,7 @@ export default function ProjectModal({ project, onClose }) {
                       <span className="arch-step-detail">{step.detail}</span>
                     </div>
                     {idx < project.architectureFlow.length - 1 && (
-                      <div className="arch-connector">➔</div>
+                      <div className="arch-connector">→</div>
                     )}
                   </React.Fragment>
                 ))}
@@ -73,7 +72,7 @@ export default function ProjectModal({ project, onClose }) {
               <ul className="project-modal-list">
                 {project.highlights.map((point, idx) => (
                   <li key={idx}>
-                    <span className="highlight-bullet">▹</span> {point}
+                    <span className="highlight-bullet">•</span> {point}
                   </li>
                 ))}
               </ul>
@@ -99,7 +98,6 @@ export default function ProjectModal({ project, onClose }) {
               className="modal-action-btn primary"
             >
               <span>Launch Live Platform</span>
-              <IconExternalLink size={13} style={{ marginLeft: '4px' }} />
             </a>
           )}
           {project.git && (
@@ -109,7 +107,6 @@ export default function ProjectModal({ project, onClose }) {
               rel="noopener noreferrer"
               className="modal-action-btn secondary"
             >
-              <IconGitHub size={14} style={{ marginRight: '6px' }} />
               <span>View GitHub Source</span>
             </a>
           )}

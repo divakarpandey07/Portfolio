@@ -1,18 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  IconDocument,
-  IconZap,
-  IconHome,
-  IconUser,
-  IconBriefcase,
-  IconAward,
-  IconMail,
-  IconPhone,
-  IconGitHub,
-  IconLinkedIn,
-  IconExternalLink,
-  IconSearch
-} from './UiIcons';
 
 export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToast, onOpenArchive, onOpenPitch }) {
   const [query, setQuery] = useState('');
@@ -25,7 +11,6 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Resume & Actions',
       title: 'Download Resume / CV (PDF)',
       subtitle: 'Official Resume of Divakar Pandey',
-      icon: <IconDocument size={16} />,
       shortcut: 'CV',
       perform: () => {
         const link = document.createElement('a');
@@ -34,7 +19,7 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        onShowToast('Resume download started', 'info');
+        onShowToast('Resume download started');
       }
     },
     {
@@ -42,7 +27,6 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Resume & Actions',
       title: '60-Second Executive Recruiter Pitch',
       subtitle: 'Instant candidate merit, academic scores & top projects',
-      icon: <IconZap size={16} />,
       shortcut: 'PITCH',
       perform: () => {
         onClose();
@@ -54,10 +38,9 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Resume & Actions',
       title: 'View Resume in New Tab',
       subtitle: 'Open PDF viewer directly',
-      icon: <IconExternalLink size={16} />,
       perform: () => {
         window.open('/Divakar_Cv.pdf', '_blank');
-        onShowToast('Opening resume preview...', 'info');
+        onShowToast('Opening resume preview...');
       }
     },
     {
@@ -65,7 +48,6 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Navigation',
       title: 'Go to Home / Exhibition',
       subtitle: 'Hero Section',
-      icon: <IconHome size={16} />,
       perform: () => onNavigate('hero')
     },
     {
@@ -73,7 +55,6 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Navigation',
       title: 'Go to About Me & Philosophy',
       subtitle: 'Bio, Experience & Engineering Mindset',
-      icon: <IconUser size={16} />,
       perform: () => onNavigate('about')
     },
     {
@@ -81,7 +62,6 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Navigation',
       title: 'Go to Education & Skills',
       subtitle: 'Degrees, Universities & Tech Stack',
-      icon: <IconZap size={16} />,
       perform: () => onNavigate('education-skills')
     },
     {
@@ -89,7 +69,6 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Navigation',
       title: 'Go to Featured Projects',
       subtitle: 'digital-pateri, BharatYatra, NightShield & IoT',
-      icon: <IconBriefcase size={16} />,
       perform: () => onNavigate('featured-projects')
     },
     {
@@ -97,7 +76,6 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Navigation',
       title: 'Go to Certificates and more',
       subtitle: 'Workshops, NIIT Java, InnoStart',
-      icon: <IconAward size={16} />,
       perform: () => onNavigate('certifications')
     },
     {
@@ -105,7 +83,6 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Navigation',
       title: 'Go to Contact / Get In Touch',
       subtitle: 'Email, Phone & Social Channels',
-      icon: <IconMail size={16} />,
       perform: () => onNavigate('contact')
     },
     {
@@ -113,7 +90,6 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Archives',
       title: 'View Full Project Gallery (8 Projects)',
       subtitle: 'Complete catalogue with tech breakdowns',
-      icon: <IconBriefcase size={16} />,
       perform: () => onOpenArchive('projects-archive')
     },
     {
@@ -121,7 +97,6 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Archives',
       title: 'View Full Academic Timeline',
       subtitle: 'MCA, BCA, PGDCA, B.Sc & O-Level',
-      icon: <IconAward size={16} />,
       perform: () => onOpenArchive('education-archive')
     },
     {
@@ -129,10 +104,9 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Quick Contact',
       title: 'Copy Email Address',
       subtitle: 'pandeydivakar07@gmail.com',
-      icon: <IconMail size={16} />,
       perform: () => {
         navigator.clipboard.writeText('pandeydivakar07@gmail.com');
-        onShowToast('Email copied to clipboard', 'info');
+        onShowToast('Email copied to clipboard');
       }
     },
     {
@@ -140,10 +114,9 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Quick Contact',
       title: 'Copy Phone Number',
       subtitle: '+91 6394163494',
-      icon: <IconPhone size={16} />,
       perform: () => {
         navigator.clipboard.writeText('+916394163494');
-        onShowToast('Phone number copied', 'info');
+        onShowToast('Phone number copied');
       }
     },
     {
@@ -151,7 +124,6 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Socials',
       title: 'Open GitHub Profile',
       subtitle: 'github.com/divakarpandey07',
-      icon: <IconGitHub size={16} />,
       perform: () => window.open('https://github.com/divakarpandey07', '_blank')
     },
     {
@@ -159,7 +131,6 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Socials',
       title: 'Open LinkedIn Profile',
       subtitle: 'linkedin.com/in/divakar6394163494',
-      icon: <IconLinkedIn size={16} />,
       perform: () => window.open('https://www.linkedin.com/in/divakar6394163494/', '_blank')
     }
   ];
@@ -202,7 +173,6 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
     <div className="cmd-backdrop" onClick={onClose}>
       <div className="cmd-modal" onClick={(e) => e.stopPropagation()}>
         <div className="cmd-header">
-          <span className="cmd-search-icon"><IconSearch size={16} /></span>
           <input
             ref={inputRef}
             type="text"
@@ -233,7 +203,6 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
                 onMouseEnter={() => setSelectedIndex(index)}
               >
                 <div className="cmd-item-left">
-                  <span className="cmd-item-icon">{act.icon}</span>
                   <div>
                     <div className="cmd-item-title">{act.title}</div>
                     <div className="cmd-item-subtitle">{act.subtitle}</div>
