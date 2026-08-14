@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToast, onOpenArchive }) {
+export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToast, onOpenArchive, onOpenPitch }) {
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef(null);
@@ -21,6 +21,18 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
         link.click();
         document.body.removeChild(link);
         onShowToast('Resume download started! 📄', '📥');
+      }
+    },
+    {
+      id: 'recruiter-pitch',
+      category: 'Resume & Actions',
+      title: '60-Second Executive Recruiter Pitch',
+      subtitle: 'Instant candidate merit, academic scores & top projects',
+      icon: '⚡',
+      shortcut: 'PITCH',
+      perform: () => {
+        onClose();
+        if (onOpenPitch) onOpenPitch();
       }
     },
     {

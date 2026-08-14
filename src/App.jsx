@@ -10,6 +10,7 @@ import CodeSpotlight from './components/CodeSpotlight';
 import ThemeSwitcher from './components/ThemeSwitcher';
 import Typewriter from './components/Typewriter';
 import GithubStatsCard from './components/GithubStatsCard';
+import RecruiterPitchModal from './components/RecruiterPitchModal';
 
 const SECTIONS = [
   { id: 'hero', label: 'Home' },
@@ -232,8 +233,10 @@ export default function App() {
   // Interactive states
   const [cmdOpen, setCmdOpen] = useState(false);
   const [terminalOpen, setTerminalOpen] = useState(false);
+  const [pitchOpen, setPitchOpen] = useState(false);
   const [modalProject, setModalProject] = useState(null);
   const [projectCategory, setProjectCategory] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedSkill, setSelectedSkill] = useState(null);
   const [toast, setToast] = useState({ visible: false, message: '', icon: '✨' });
   const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
@@ -385,7 +388,8 @@ export default function App() {
         target.closest('.hud-nav-item') ||
         target.closest('.hud-logo') ||
         target.closest('.btn-primary') ||
-        target.closest('.btn-outline');
+        target.closest('.btn-outline') ||
+        target.closest('.btn-pitch');
       setIsHovering(!!isInteractive);
     };
 
@@ -438,11 +442,17 @@ export default function App() {
   };
 
   const filteredProjects = ALL_PROJECTS.filter((p) => {
-    if (selectedSkill) {
-      return selectedSkill.projects.includes(p.id);
+    if (selectedSkill && !selectedSkill.projects.includes(p.id)) return false;
+    if (projectCategory !== 'all' && p.category !== projectCategory) return false;
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      const matchTitle = p.title.toLowerCase().includes(q);
+      const matchDesc = p.desc.toLowerCase().includes(q) || (p.longDesc && p.longDesc.toLowerCase().includes(q));
+      const matchTech = p.tech.some((t) => t.toLowerCase().includes(q));
+      const matchCat = p.categoryLabel && p.categoryLabel.toLowerCase().includes(q);
+      return matchTitle || matchDesc || matchTech || matchCat;
     }
-    if (projectCategory === 'all') return true;
-    return p.category === projectCategory;
+    return true;
   });
 
   const handleContactSubmit = async (e) => {
@@ -508,6 +518,7 @@ export default function App() {
           setView(archiveView);
           window.scrollTo({ top: 0 });
         }}
+        onOpenPitch={() => setPitchOpen(true)}
       />
 
       {/* Interactive Terminal Modal */}
@@ -517,6 +528,15 @@ export default function App() {
         onNavigate={scrollToSection}
         onDownloadCV={handleDownloadCV}
         onShowToast={showToast}
+        onOpenPitch={() => setPitchOpen(true)}
+      />
+
+      {/* Recruiter 60-Second Pitch Modal */}
+      <RecruiterPitchModal
+        isOpen={pitchOpen}
+        onClose={() => setPitchOpen(false)}
+        onDownloadCV={handleDownloadCV}
+        onNavigateToContact={() => scrollToSection('contact')}
       />
 
       {/* Project Deep Dive Modal */}
@@ -653,11 +673,20 @@ export default function App() {
                     </button>
 
                     <button
+                      className="btn-pitch"
+                      onClick={() => setPitchOpen(true)}
+                      id="hero-pitch-btn"
+                      title="Open 60-Second Executive Summary"
+                    >
+                      <span>⚡ 60-Sec Pitch</span>
+                    </button>
+
+                    <button
                       className="btn-outline"
                       onClick={() => scrollToSection('about')}
                       id="hero-about-btn"
                     >
-                      <span>About Me &amp; Vision</span>
+                      <span>About Me</span>
                       <span className="btn-icon">👤</span>
                     </button>
                   </div>
@@ -814,6 +843,12 @@ export default function App() {
                         </button>
                         <button
                           className="btn-outline-small"
+                          onClick={() => setPitchOpen(true)}
+                        >
+                          ⚡ 60s Recruiter Pitch
+                        </button>
+                        <button
+                          className="btn-outline-small"
                           onClick={() => scrollToSection('contact')}
                         >
                           ✉️ Get In Touch
@@ -910,6 +945,34 @@ export default function App() {
 
                   <div className="divider"></div>
 
+                  {/* Instant Keyword Search Bar */}
+                  <div className="project-search-container">
+                    <div className="project-search-input-wrapper">
+                      <span className="search-icon">🔍</span>
+                      <input
+                        type="text"
+                        className="project-search-input"
+                        placeholder="Search projects by tech (e.g. Gemini, Java, IoT, React, Android)..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
+                      {searchQuery && (
+                        <button
+                          className="search-clear-btn"
+                          onClick={() => setSearchQuery('')}
+                          title="Clear search"
+                        >
+                          ✕
+                        </button>
+                      )}
+                    </div>
+                    {searchQuery && (
+                      <div className="search-results-count">
+                        Found {filteredProjects.length} matching project{filteredProjects.length === 1 ? '' : 's'}
+                      </div>
+                    )}
+                  </div>
+
                   <div className="project-filter-bar">
                     {[
                       { key: 'all', label: 'All (8)' },
@@ -920,9 +983,10 @@ export default function App() {
                     ].map((tab) => (
                       <button
                         key={tab.key}
-                        className={`filter-pill ${projectCategory === tab.key && !selectedSkill ? 'active' : ''}`}
+                        className={`filter-pill ${projectCategory === tab.key && !selectedSkill && !searchQuery ? 'active' : ''}`}
                         onClick={() => {
                           setSelectedSkill(null);
+                          setSearchQuery('');
                           setProjectCategory(tab.key);
                         }}
                       >
@@ -932,69 +996,79 @@ export default function App() {
                   </div>
 
                   <div className="project-grid-responsive">
-                    {filteredProjects.slice(0, 4).map((proj) => (
-                      <div key={proj.id} className="project-card interactive-project-card">
-                        <div className="project-card-header">
-                          <div>
-                            <h3>{proj.title}</h3>
-                            <span className="timeline-date">{proj.date}</span>
-                          </div>
-                          <span className="project-category-tag">{proj.categoryLabel}</span>
-                        </div>
-
-                        <p className="project-card-desc">{proj.desc}</p>
-
-                        <div
-                          className="project-image-container"
-                          onClick={() => setModalProject(proj)}
-                          title="Click to view deep dive case study"
-                        >
-                          <img src={proj.img} alt={`${proj.title} screenshot`} className="project-image" loading="lazy" />
-                          <div className="project-image-overlay">
-                            <span>🔍 Deep Dive Case Study</span>
-                          </div>
-                        </div>
-
-                        <div className="badge-container" style={{ marginTop: '10px' }}>
-                          {proj.tech.map((t, idx) => (
-                            <span key={idx} className="badge">{t}</span>
-                          ))}
-                        </div>
-
-                        <div className="project-links">
-                          <button
-                            className="project-link-btn case-study-btn"
-                            onClick={() => setModalProject(proj)}
-                          >
-                            🔍 Case Study
-                          </button>
-
-                          {proj.demo && (
-                            <a
-                              href={proj.demo}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="project-link"
-                              id={`project-demo-${proj.id}`}
-                            >
-                              🔗 Live Demo
-                            </a>
-                          )}
-
-                          {proj.git && (
-                            <a
-                              href={proj.git}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="project-link"
-                              id={`project-git-${proj.id}`}
-                            >
-                              💻 GitHub
-                            </a>
-                          )}
-                        </div>
+                    {filteredProjects.length === 0 ? (
+                      <div className="no-projects-found">
+                        <span className="no-proj-icon">🔍</span>
+                        <p>No projects found matching "<strong>{searchQuery}</strong>".</p>
+                        <button className="clear-skill-btn" onClick={() => { setSearchQuery(''); setSelectedSkill(null); setProjectCategory('all'); }}>
+                          Reset Filters
+                        </button>
                       </div>
-                    ))}
+                    ) : (
+                      filteredProjects.slice(0, 4).map((proj) => (
+                        <div key={proj.id} className="project-card interactive-project-card">
+                          <div className="project-card-header">
+                            <div>
+                              <h3>{proj.title}</h3>
+                              <span className="timeline-date">{proj.date}</span>
+                            </div>
+                            <span className="project-category-tag">{proj.categoryLabel}</span>
+                          </div>
+
+                          <p className="project-card-desc">{proj.desc}</p>
+
+                          <div
+                            className="project-image-container"
+                            onClick={() => setModalProject(proj)}
+                            title="Click to view deep dive case study"
+                          >
+                            <img src={proj.img} alt={`${proj.title} screenshot`} className="project-image" loading="lazy" />
+                            <div className="project-image-overlay">
+                              <span>🔍 Deep Dive Case Study</span>
+                            </div>
+                          </div>
+
+                          <div className="badge-container" style={{ marginTop: '10px' }}>
+                            {proj.tech.map((t, idx) => (
+                              <span key={idx} className="badge">{t}</span>
+                            ))}
+                          </div>
+
+                          <div className="project-links">
+                            <button
+                              className="project-link-btn case-study-btn"
+                              onClick={() => setModalProject(proj)}
+                            >
+                              🔍 Case Study
+                            </button>
+
+                            {proj.demo && (
+                              <a
+                                href={proj.demo}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="project-link"
+                                id={`project-demo-${proj.id}`}
+                              >
+                                🔗 Live Demo
+                              </a>
+                            )}
+
+                            {proj.git && (
+                              <a
+                                href={proj.git}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="project-link"
+                                id={`project-git-${proj.id}`}
+                              >
+                                💻 GitHub
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    )}
                   </div>
 
                   <button

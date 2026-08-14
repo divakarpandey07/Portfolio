@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-export default function TerminalModal({ isOpen, onClose, onNavigate, onDownloadCV, onShowToast }) {
+export default function TerminalModal({ isOpen, onClose, onNavigate, onDownloadCV, onShowToast, onOpenPitch }) {
   const [history, setHistory] = useState([
     { type: 'system', text: 'Divakar Pandey Cyber Terminal v2.4.0 [x86_64-lpu-linux]' },
-    { type: 'system', text: 'Type "help" to see available commands, "projects" for works, or "certificates" for certs.' }
+    { type: 'system', text: 'Type "help" to see available commands, "pitch" for 60s summary, or "certificates" for certs.' }
   ]);
   const [input, setInput] = useState('');
   const [cmdIndex, setCmdIndex] = useState(-1);
@@ -37,6 +37,7 @@ export default function TerminalModal({ isOpen, onClose, onNavigate, onDownloadC
             type: 'output',
             text: `Available Commands:
   • help                 : Display this command list
+  • pitch / summary      : Open 60-Second Executive Recruiter Pitch
   • about                : Developer biography & engineering philosophy
   • skills               : List technical stack & core competencies
   • projects / work      : List top featured engineering projects
@@ -48,6 +49,14 @@ export default function TerminalModal({ isOpen, onClose, onNavigate, onDownloadC
   • clear / cls          : Clear terminal screen
   • exit / close         : Close terminal`
           });
+          break;
+
+        case 'pitch':
+        case 'summary':
+        case 'executive':
+        case 'hire':
+          newHistory.push({ type: 'success', text: '⚡ Launching 60-Second Executive Candidate Pitch...' });
+          if (onOpenPitch) onOpenPitch();
           break;
 
         case 'about':
