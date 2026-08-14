@@ -55,7 +55,7 @@ export default function TerminalModal({ isOpen, onClose, onNavigate, onDownloadC
         case 'summary':
         case 'executive':
         case 'hire':
-          newHistory.push({ type: 'success', text: '⚡ Launching 60-Second Executive Candidate Pitch...' });
+          newHistory.push({ type: 'success', text: 'Launching 60-Second Executive Candidate Pitch...' });
           if (onOpenPitch) onOpenPitch();
           break;
 
@@ -155,7 +155,7 @@ export default function TerminalModal({ isOpen, onClose, onNavigate, onDownloadC
 
         case 'resume':
         case 'cv':
-          newHistory.push({ type: 'success', text: '📥 Initiating download of Divakar_Pandey_Resume.pdf...' });
+          newHistory.push({ type: 'success', text: 'Initiating download of Divakar_Pandey_Resume.pdf...' });
           onDownloadCV();
           break;
 

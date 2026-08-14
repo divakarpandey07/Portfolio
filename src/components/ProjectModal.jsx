@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { IconExternalLink, IconGitHub } from './UiIcons';
 
 export default function ProjectModal({ project, onClose }) {
   useEffect(() => {
@@ -97,7 +98,8 @@ export default function ProjectModal({ project, onClose }) {
               rel="noopener noreferrer"
               className="modal-action-btn primary"
             >
-              🚀 Launch Live Platform
+              <span>Launch Live Platform</span>
+              <IconExternalLink size={13} style={{ marginLeft: '4px' }} />
             </a>
           )}
           {project.git && (
@@ -107,7 +109,8 @@ export default function ProjectModal({ project, onClose }) {
               rel="noopener noreferrer"
               className="modal-action-btn secondary"
             >
-              💻 View GitHub Source
+              <IconGitHub size={14} style={{ marginRight: '6px' }} />
+              <span>View GitHub Source</span>
             </a>
           )}
           <button className="modal-action-btn outline" onClick={onClose}>

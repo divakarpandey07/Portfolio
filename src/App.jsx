@@ -11,6 +11,24 @@ import ThemeSwitcher from './components/ThemeSwitcher';
 import Typewriter from './components/Typewriter';
 import GithubStatsCard from './components/GithubStatsCard';
 import RecruiterPitchModal from './components/RecruiterPitchModal';
+import TechIcon from './components/TechIcons';
+import {
+  IconDocument,
+  IconUser,
+  IconZap,
+  IconMail,
+  IconPhone,
+  IconLinkedIn,
+  IconGitHub,
+  IconExternalLink,
+  IconSearch,
+  IconCheck,
+  IconCopy,
+  IconGlobe,
+  IconShield,
+  IconCpu,
+  IconSend
+} from './components/UiIcons';
 
 const SECTIONS = [
   { id: 'hero', label: 'Home' },
@@ -209,18 +227,18 @@ const ALL_PROJECTS = [
 ];
 
 const SKILLS_LIST = [
-  { name: 'React.js', emoji: '⚛️', category: 'frontend', projects: ['digital-pateri', 'bharat-yatra', 'carbon-tracker'] },
-  { name: 'Node.js', emoji: '🟢', category: 'backend', projects: ['digital-pateri'] },
-  { name: 'Gemini AI', emoji: '🤖', category: 'ai', projects: ['digital-pateri'] },
-  { name: 'Java', emoji: '☕', category: 'mobile', projects: ['nightshield'] },
-  { name: 'Android Studio', emoji: '📱', category: 'mobile', projects: ['nightshield'] },
-  { name: 'Python', emoji: '🐍', category: 'ai', projects: ['cyberguard'] },
-  { name: 'C++', emoji: '⚙️', category: 'systems', projects: ['iot-classroom'] },
-  { name: 'ESP32 / IoT', emoji: '🔌', category: 'systems', projects: ['iot-classroom'] },
-  { name: 'SQL / MySQL', emoji: '💾', category: 'backend', projects: ['saanidhya'] },
-  { name: 'MongoDB', emoji: '🍃', category: 'backend', projects: ['digital-pateri'] },
-  { name: 'TypeScript', emoji: '🟦', category: 'frontend', projects: ['bharat-yatra'] },
-  { name: 'Git & GitHub', emoji: '🌿', category: 'tools', projects: ['digital-pateri', 'bharat-yatra', 'nightshield', 'iot-classroom'] }
+  { name: 'React.js', category: 'frontend', projects: ['digital-pateri', 'bharat-yatra', 'carbon-tracker'] },
+  { name: 'Node.js', category: 'backend', projects: ['digital-pateri'] },
+  { name: 'Gemini AI', category: 'ai', projects: ['digital-pateri'] },
+  { name: 'Java', category: 'mobile', projects: ['nightshield'] },
+  { name: 'Android Studio', category: 'mobile', projects: ['nightshield'] },
+  { name: 'Python', category: 'ai', projects: ['cyberguard'] },
+  { name: 'C++', category: 'systems', projects: ['iot-classroom'] },
+  { name: 'ESP32 / IoT', category: 'systems', projects: ['iot-classroom'] },
+  { name: 'SQL / MySQL', category: 'backend', projects: ['saanidhya'] },
+  { name: 'MongoDB', category: 'backend', projects: ['digital-pateri'] },
+  { name: 'TypeScript', category: 'frontend', projects: ['bharat-yatra'] },
+  { name: 'Git & GitHub', category: 'tools', projects: ['digital-pateri', 'bharat-yatra', 'nightshield', 'iot-classroom'] }
 ];
 
 export default function App() {
@@ -238,7 +256,7 @@ export default function App() {
   const [projectCategory, setProjectCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSkill, setSelectedSkill] = useState(null);
-  const [toast, setToast] = useState({ visible: false, message: '', icon: '✨' });
+  const [toast, setToast] = useState({ visible: false, message: '', icon: 'check' });
   const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
   const [formSending, setFormSending] = useState(false);
   const [formStatus, setFormStatus] = useState(null); // null | 'sending' | 'success' | 'fallback'
@@ -252,8 +270,8 @@ export default function App() {
     contact: useRef(null)
   };
 
-  const showToast = (message, icon = '✨') => {
-    setToast({ visible: true, message, icon });
+  const showToast = (message, iconType = 'check') => {
+    setToast({ visible: true, message, icon: iconType });
     setTimeout(() => {
       setToast((prev) => ({ ...prev, visible: false }));
     }, 3500);
@@ -266,7 +284,7 @@ export default function App() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    showToast('Resume / CV downloaded! 📄', '📥');
+    showToast('Resume / CV downloaded', 'check');
   };
 
   // Keyboard shortcuts listener for Cmd+K and ` (Terminal)
@@ -433,10 +451,10 @@ export default function App() {
   const handleSkillClick = (skill) => {
     if (selectedSkill?.name === skill.name) {
       setSelectedSkill(null);
-      showToast('Skill filter cleared', '🔄');
+      showToast('Skill filter cleared', 'info');
     } else {
       setSelectedSkill(skill);
-      showToast(`Highlighting projects built with ${skill.name} ⚡`, '🔍');
+      showToast(`Filtered by ${skill.name}`, 'check');
       scrollToSection('featured-projects');
     }
   };
@@ -471,7 +489,7 @@ export default function App() {
           name: contactForm.name,
           email: contactForm.email,
           message: contactForm.message,
-          _subject: `🚀 Portfolio Message from ${contactForm.name}`,
+          _subject: `Portfolio Message from ${contactForm.name}`,
           _template: 'table',
           _captcha: 'false'
         })
@@ -483,7 +501,7 @@ export default function App() {
         setFormSending(false);
         setFormStatus('success');
         setContactForm({ name: '', email: '', message: '' });
-        showToast('Message delivered directly to Divakar\'s Inbox! 🚀', '✅');
+        showToast('Message delivered to Divakar\'s Inbox', 'check');
         setTimeout(() => setFormStatus(null), 6000);
       } else {
         throw new Error('Direct submission failed');
@@ -491,7 +509,7 @@ export default function App() {
     } catch {
       setFormSending(false);
       setFormStatus('fallback');
-      showToast('Opening mail client to complete dispatch...', '✉️');
+      showToast('Opening mail client to complete dispatch...', 'info');
       window.location.href = `mailto:pandeydivakar07@gmail.com?subject=Contact from ${encodeURIComponent(contactForm.name)}&body=${encodeURIComponent(contactForm.message)}%0A%0AFrom: ${encodeURIComponent(contactForm.email)}`;
       setTimeout(() => setFormStatus(null), 6000);
     }
@@ -605,7 +623,7 @@ export default function App() {
                   onClick={handleDownloadCV}
                   aria-label="Download Resume"
                 >
-                  <span>CV 📄</span>
+                  <span>CV</span>
                 </button>
               </div>
             </header>
@@ -668,8 +686,8 @@ export default function App() {
                       onClick={handleDownloadCV}
                       id="hero-download-cv-btn"
                     >
+                      <IconDocument size={16} />
                       <span>Download Resume (PDF)</span>
-                      <span className="btn-icon">📄</span>
                     </button>
 
                     <button
@@ -678,7 +696,8 @@ export default function App() {
                       id="hero-pitch-btn"
                       title="Open 60-Second Executive Summary"
                     >
-                      <span>⚡ 60-Sec Pitch</span>
+                      <IconZap size={16} />
+                      <span>60-Sec Pitch</span>
                     </button>
 
                     <button
@@ -686,8 +705,8 @@ export default function App() {
                       onClick={() => scrollToSection('about')}
                       id="hero-about-btn"
                     >
+                      <IconUser size={16} />
                       <span>About Me</span>
-                      <span className="btn-icon">👤</span>
                     </button>
                   </div>
 
@@ -698,7 +717,8 @@ export default function App() {
                       rel="noopener noreferrer"
                       className="social-icon-link"
                     >
-                      🐙 GitHub
+                      <IconGitHub size={14} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+                      GitHub
                     </a>
                     <a
                       href="https://www.linkedin.com/in/divakar6394163494/"
@@ -706,13 +726,15 @@ export default function App() {
                       rel="noopener noreferrer"
                       className="social-icon-link"
                     >
-                      🔗 LinkedIn
+                      <IconLinkedIn size={14} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+                      LinkedIn
                     </a>
                     <a
                       href="mailto:pandeydivakar07@gmail.com"
                       className="social-icon-link"
                     >
-                      ✉️ Email
+                      <IconMail size={14} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+                      Email
                     </a>
                     <button
                       className="social-icon-link cmd-trigger-text"
@@ -749,7 +771,7 @@ export default function App() {
                     <p className="about-subtitle">Full-Stack Software Engineer • MCA Candidate • Tech Innovator</p>
                   </div>
 
-                  <div className="divider" style={{ margin: '20px auto 32px' }}></div>
+                  <div className="divider" style={{ margin: '20px auto 28px' }}></div>
 
                   <div className="about-grid-container">
                     {/* Left Column: Portrait & Credentials */}
@@ -798,10 +820,10 @@ export default function App() {
                         </p>
                       </div>
 
-                      {/* 4 Core Competency Cards */}
+                      {/* 4 Core Competency Cards with Clean SVG Icons */}
                       <div className="about-competencies-grid">
                         <div className="comp-card">
-                          <div className="comp-icon">💻</div>
+                          <div className="comp-icon"><IconGlobe size={18} /></div>
                           <div>
                             <div className="comp-title">Full-Stack Web Systems</div>
                             <div className="comp-desc">React.js, Node.js, Express, TypeScript, MongoDB, MySQL &amp; Cloud.</div>
@@ -809,7 +831,7 @@ export default function App() {
                         </div>
 
                         <div className="comp-card">
-                          <div className="comp-icon">🤖</div>
+                          <div className="comp-icon"><TechIcon name="gemini" size={18} /></div>
                           <div>
                             <div className="comp-title">Applied AI &amp; LLM Logic</div>
                             <div className="comp-desc">Gemini AI API assistants, Python, Scikit-Learn intrusion classifiers.</div>
@@ -817,7 +839,7 @@ export default function App() {
                         </div>
 
                         <div className="comp-card">
-                          <div className="comp-icon">🔒</div>
+                          <div className="comp-icon"><IconShield size={18} /></div>
                           <div>
                             <div className="comp-title">Mobile Security &amp; Android</div>
                             <div className="comp-desc">Java, Android Studio, AES-256 cryptography, Firebase Realtime.</div>
@@ -825,7 +847,7 @@ export default function App() {
                         </div>
 
                         <div className="comp-card">
-                          <div className="comp-icon">⚡</div>
+                          <div className="comp-icon"><IconCpu size={18} /></div>
                           <div>
                             <div className="comp-title">IoT &amp; Embedded Hardware</div>
                             <div className="comp-desc">ESP32, NodeMCU ESP8266, C++, RFID &amp; climate telemetry sensors.</div>
@@ -839,19 +861,22 @@ export default function App() {
                           className="btn-primary-small"
                           onClick={handleDownloadCV}
                         >
-                          📄 Download Official CV (PDF)
+                          <IconDocument size={14} style={{ marginRight: '5px' }} />
+                          Download Official CV (PDF)
                         </button>
                         <button
                           className="btn-outline-small"
                           onClick={() => setPitchOpen(true)}
                         >
-                          ⚡ 60s Recruiter Pitch
+                          <IconZap size={14} style={{ marginRight: '5px' }} />
+                          60s Recruiter Pitch
                         </button>
                         <button
                           className="btn-outline-small"
                           onClick={() => scrollToSection('contact')}
                         >
-                          ✉️ Get In Touch
+                          <IconMail size={14} style={{ marginRight: '5px' }} />
+                          Get In Touch
                         </button>
                       </div>
                     </div>
@@ -910,6 +935,7 @@ export default function App() {
                     <span className="accent-text" style={{ fontSize: '0.65rem' }}>INTERACTIVE TECHNICAL ARSENAL (CLICK TO FILTER PROJECTS)</span>
                   </div>
 
+                  {/* Skills Badges with Authentic Vector Logos */}
                   <div className="badge-container" style={{ marginTop: '16px', gap: '10px' }}>
                     {SKILLS_LIST.map((sk) => (
                       <button
@@ -918,7 +944,7 @@ export default function App() {
                         onClick={() => handleSkillClick(sk)}
                         title={`Click to view projects using ${sk.name}`}
                       >
-                        <span className="badge-emoji">{sk.emoji}</span>
+                        <TechIcon name={sk.name} size={16} />
                         <span>{sk.name}</span>
                       </button>
                     ))}
@@ -948,7 +974,7 @@ export default function App() {
                   {/* Instant Keyword Search Bar */}
                   <div className="project-search-container">
                     <div className="project-search-input-wrapper">
-                      <span className="search-icon">🔍</span>
+                      <span className="search-icon"><IconSearch size={15} /></span>
                       <input
                         type="text"
                         className="project-search-input"
@@ -998,7 +1024,7 @@ export default function App() {
                   <div className="project-grid-responsive">
                     {filteredProjects.length === 0 ? (
                       <div className="no-projects-found">
-                        <span className="no-proj-icon">🔍</span>
+                        <span className="no-proj-icon"><IconSearch size={28} /></span>
                         <p>No projects found matching "<strong>{searchQuery}</strong>".</p>
                         <button className="clear-skill-btn" onClick={() => { setSearchQuery(''); setSelectedSkill(null); setProjectCategory('all'); }}>
                           Reset Filters
@@ -1024,7 +1050,7 @@ export default function App() {
                           >
                             <img src={proj.img} alt={`${proj.title} screenshot`} className="project-image" loading="lazy" />
                             <div className="project-image-overlay">
-                              <span>🔍 Deep Dive Case Study</span>
+                              <span>Deep Dive Case Study</span>
                             </div>
                           </div>
 
@@ -1039,7 +1065,7 @@ export default function App() {
                               className="project-link-btn case-study-btn"
                               onClick={() => setModalProject(proj)}
                             >
-                              🔍 Case Study
+                              Case Study
                             </button>
 
                             {proj.demo && (
@@ -1050,7 +1076,8 @@ export default function App() {
                                 className="project-link"
                                 id={`project-demo-${proj.id}`}
                               >
-                                🔗 Live Demo
+                                <span>Live Demo</span>
+                                <IconExternalLink size={12} style={{ marginLeft: '4px' }} />
                               </a>
                             )}
 
@@ -1062,7 +1089,8 @@ export default function App() {
                                 className="project-link"
                                 id={`project-git-${proj.id}`}
                               >
-                                💻 GitHub
+                                <IconGitHub size={13} style={{ marginRight: '4px' }} />
+                                <span>GitHub</span>
                               </a>
                             )}
                           </div>
@@ -1166,7 +1194,7 @@ export default function App() {
 
                   <div className="resume-download-box">
                     <div className="resume-box-left">
-                      <span className="resume-icon">📄</span>
+                      <span className="resume-icon"><IconDocument size={28} /></span>
                       <div>
                         <div className="resume-box-title">Divakar_Pandey_Resume.pdf</div>
                         <div className="resume-box-sub">Official Master of Computer Applications Resume</div>
@@ -1178,7 +1206,8 @@ export default function App() {
                         onClick={handleDownloadCV}
                         id="contact-download-resume-btn"
                       >
-                        📥 Download CV
+                        <IconDocument size={13} style={{ marginRight: '4px' }} />
+                        Download CV
                       </button>
                       <a
                         href="/Divakar_Cv.pdf"
@@ -1186,14 +1215,15 @@ export default function App() {
                         rel="noopener noreferrer"
                         className="btn-outline-small"
                       >
-                        👁️ Preview
+                        <IconExternalLink size={13} style={{ marginRight: '4px' }} />
+                        Preview
                       </a>
                     </div>
                   </div>
 
                   <div className="contact-details">
                     <div className="contact-item">
-                      <div className="contact-icon">✉</div>
+                      <div className="contact-icon"><IconMail size={16} /></div>
                       <div className="contact-info">
                         <p className="contact-label">Email</p>
                         <a href="mailto:pandeydivakar07@gmail.com" className="contact-link">
@@ -1204,16 +1234,17 @@ export default function App() {
                         className="copy-btn"
                         onClick={() => {
                           navigator.clipboard.writeText('pandeydivakar07@gmail.com');
-                          showToast('Email copied to clipboard! 📋', '✅');
+                          showToast('Email copied to clipboard', 'check');
                         }}
                         title="Copy Email"
                       >
+                        <IconCopy size={12} style={{ marginRight: '4px' }} />
                         Copy
                       </button>
                     </div>
 
                     <div className="contact-item">
-                      <div className="contact-icon">📞</div>
+                      <div className="contact-icon"><IconPhone size={16} /></div>
                       <div className="contact-info">
                         <p className="contact-label">Phone</p>
                         <a href="tel:+916394163494" className="contact-link">+91 6394163494</a>
@@ -1222,16 +1253,17 @@ export default function App() {
                         className="copy-btn"
                         onClick={() => {
                           navigator.clipboard.writeText('+916394163494');
-                          showToast('Phone copied to clipboard! 📋', '✅');
+                          showToast('Phone copied to clipboard', 'check');
                         }}
                         title="Copy Phone"
                       >
+                        <IconCopy size={12} style={{ marginRight: '4px' }} />
                         Copy
                       </button>
                     </div>
 
                     <div className="contact-item">
-                      <div className="contact-icon">🔗</div>
+                      <div className="contact-icon"><IconLinkedIn size={16} /></div>
                       <div className="contact-info">
                         <p className="contact-label">LinkedIn</p>
                         <a
@@ -1249,7 +1281,8 @@ export default function App() {
                         rel="noopener noreferrer"
                         className="copy-btn"
                       >
-                        Open ↗
+                        <span>Open</span>
+                        <IconExternalLink size={12} style={{ marginLeft: '4px' }} />
                       </a>
                     </div>
                   </div>
@@ -1257,12 +1290,13 @@ export default function App() {
                   <form className="contact-quick-form" onSubmit={handleContactSubmit}>
                     {formStatus === 'success' && (
                       <div className="form-status-banner success">
-                        <span>✅ Message sent directly to Divakar's Gmail inbox! Expect a prompt reply.</span>
+                        <IconCheck size={16} style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                        <span>Message sent directly to Divakar's Gmail inbox! Expect a prompt reply.</span>
                       </div>
                     )}
                     {formStatus === 'sending' && (
                       <div className="form-status-banner sending">
-                        <span>⏳ Transmitting message securely to pandeydivakar07@gmail.com...</span>
+                        <span>Transmitting message securely to pandeydivakar07@gmail.com...</span>
                       </div>
                     )}
 
@@ -1296,7 +1330,8 @@ export default function App() {
                       disabled={formSending}
                     />
                     <button type="submit" className="btn-primary" disabled={formSending}>
-                      <span>{formSending ? 'Transmitting to Gmail...' : 'Send Message 🚀'}</span>
+                      <IconSend size={15} />
+                      <span>{formSending ? 'Transmitting to Gmail...' : 'Send Message'}</span>
                     </button>
                   </form>
 
@@ -1430,7 +1465,8 @@ function ArchivePage({ view, setView, onOpenModal, onDownloadCV }) {
           </div>
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
             <button className="archive-back-btn" onClick={onDownloadCV}>
-              Download Resume 📄
+              <IconDocument size={14} style={{ marginRight: '6px' }} />
+              Download Resume
             </button>
             <button className="archive-back-btn" onClick={() => setView('main')}>
               ← Back to Exhibition
@@ -1463,7 +1499,7 @@ function ArchivePage({ view, setView, onOpenModal, onDownloadCV }) {
                 >
                   <img src={proj.img} alt={proj.title} className="project-image" loading="lazy" />
                   <div className="project-image-overlay">
-                    <span>🔍 Case Study</span>
+                    <span>Case Study</span>
                   </div>
                 </div>
                 <div className="badge-container" style={{ marginTop: '12px' }}>
@@ -1477,16 +1513,18 @@ function ArchivePage({ view, setView, onOpenModal, onDownloadCV }) {
                     style={{ fontSize: '0.65rem' }}
                     onClick={() => onOpenModal(proj)}
                   >
-                    🔍 Details
+                    Details
                   </button>
                   {proj.demo && (
                     <a href={proj.demo} target="_blank" rel="noopener noreferrer" className="project-link" style={{ fontSize: '0.65rem' }}>
-                      🔗 Demo
+                      <span>Demo</span>
+                      <IconExternalLink size={11} style={{ marginLeft: '3px' }} />
                     </a>
                   )}
                   {proj.git && (
                     <a href={proj.git} target="_blank" rel="noopener noreferrer" className="project-link" style={{ fontSize: '0.65rem' }}>
-                      💻 Code
+                      <IconGitHub size={12} style={{ marginRight: '3px' }} />
+                      <span>Code</span>
                     </a>
                   )}
                 </div>

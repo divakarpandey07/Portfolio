@@ -1,4 +1,5 @@
 import React from 'react';
+import { IconGitHub, IconExternalLink } from './UiIcons';
 
 export default function GithubStatsCard() {
   const languages = [
@@ -13,7 +14,7 @@ export default function GithubStatsCard() {
     <div className="github-stats-card">
       <div className="github-stats-header">
         <div className="github-user-info">
-          <span className="github-icon">🐙</span>
+          <span className="github-icon"><IconGitHub size={26} /></span>
           <div>
             <div className="github-username">divakarpandey07</div>
             <div className="github-subtitle">GitHub Open-Source Contributions &amp; Codebase</div>
@@ -26,7 +27,8 @@ export default function GithubStatsCard() {
           rel="noopener noreferrer"
           className="btn-outline-small github-cta-btn"
         >
-          <span>Explore Repositories ↗</span>
+          <span>Explore Repositories</span>
+          <IconExternalLink size={13} style={{ marginLeft: '4px' }} />
         </a>
       </div>
 

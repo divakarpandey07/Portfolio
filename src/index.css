@@ -648,15 +648,16 @@ p {
 
 .about-grid-container {
   display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: 36px;
+  grid-template-columns: 220px 1fr;
+  gap: 32px;
   align-items: start;
 }
 
 .about-left-col {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
+  max-width: 220px;
 }
 
 .portrait-frame {
@@ -665,19 +666,20 @@ p {
   border-radius: 6px;
   overflow: hidden;
   border: 1px solid rgba(189, 160, 122, 0.3);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
   background: #04060d;
 }
 
 .portrait-photo {
   width: 100%;
-  max-height: 340px;
+  max-height: 230px;
   object-fit: cover;
   object-position: center top;
   display: block;
   filter: contrast(102%) brightness(98%);
   transition: transform 0.4s ease;
 }
+
 
 .portrait-tag {
   position: absolute;
@@ -764,9 +766,16 @@ p {
 }
 
 .comp-icon {
-  font-size: 1.15rem;
+  width: 34px;
+  height: 34px;
+  border-radius: 4px;
+  background: rgba(189, 160, 122, 0.08);
+  border: 1px solid rgba(189, 160, 122, 0.2);
+  color: var(--accent-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
-  margin-top: 2px;
 }
 
 .comp-title {
@@ -814,6 +823,12 @@ p {
   transition: all 0.25s ease;
 }
 
+.tech-svg-icon {
+  display: inline-block;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
 .bounce-badge {
   display: inline-flex;
   align-items: center;
@@ -821,13 +836,13 @@ p {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-bottom: 2px solid rgba(255, 255, 255, 0.12);
-  padding: 8px 16px;
+  padding: 7px 14px;
   border-radius: 30px;
   font-family: var(--font-accent);
   font-size: 0.72rem;
   color: var(--text-primary);
   font-weight: 600;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
   cursor: pointer;
@@ -850,8 +865,11 @@ p {
   transform: translateY(-2px);
 }
 
-.bounce-badge .badge-emoji {
-  font-size: 1.1rem;
+.bounce-badge.skill-active .tech-svg-icon path,
+.bounce-badge.skill-active .tech-svg-icon circle,
+.bounce-badge.skill-active .tech-svg-icon rect,
+.bounce-badge.skill-active .tech-svg-icon ellipse {
+  stroke: #020205;
 }
 
 .skill-filter-notice {

@@ -1,13 +1,14 @@
 import React from 'react';
+import { IconHome, IconUser, IconZap, IconBriefcase, IconAward, IconMail, IconDocument, IconSearch } from './UiIcons';
 
 export default function MobileNav({ activeSection, onNavigate, onOpenCommandPalette }) {
   const navItems = [
-    { id: 'hero', label: 'Home', icon: '🏠' },
-    { id: 'about', label: 'About', icon: '👤' },
-    { id: 'education-skills', label: 'Skills', icon: '⚡' },
-    { id: 'featured-projects', label: 'Work', icon: '💼' },
-    { id: 'certifications', label: 'Certs', icon: '🏆' },
-    { id: 'contact', label: 'Contact', icon: '✉️' },
+    { id: 'hero', label: 'Home', icon: <IconHome size={15} /> },
+    { id: 'about', label: 'About', icon: <IconUser size={15} /> },
+    { id: 'education-skills', label: 'Skills', icon: <IconZap size={15} /> },
+    { id: 'featured-projects', label: 'Work', icon: <IconBriefcase size={15} /> },
+    { id: 'certifications', label: 'Certs', icon: <IconAward size={15} /> },
+    { id: 'contact', label: 'Contact', icon: <IconMail size={15} /> },
   ];
 
   return (
@@ -36,7 +37,7 @@ export default function MobileNav({ activeSection, onNavigate, onOpenCommandPale
         }}
         aria-label="Download Resume"
       >
-        <span className="dock-icon">📄</span>
+        <span className="dock-icon"><IconDocument size={15} /></span>
         <span className="dock-label">CV</span>
       </button>
 
@@ -45,7 +46,7 @@ export default function MobileNav({ activeSection, onNavigate, onOpenCommandPale
         onClick={onOpenCommandPalette}
         aria-label="Search and Actions"
       >
-        <span className="dock-icon">🔍</span>
+        <span className="dock-icon"><IconSearch size={15} /></span>
         <span className="dock-label">⌘K</span>
       </button>
     </nav>

@@ -1,4 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
+import {
+  IconDocument,
+  IconZap,
+  IconHome,
+  IconUser,
+  IconBriefcase,
+  IconAward,
+  IconMail,
+  IconPhone,
+  IconGitHub,
+  IconLinkedIn,
+  IconExternalLink,
+  IconSearch
+} from './UiIcons';
 
 export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToast, onOpenArchive, onOpenPitch }) {
   const [query, setQuery] = useState('');
@@ -11,7 +25,7 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Resume & Actions',
       title: 'Download Resume / CV (PDF)',
       subtitle: 'Official Resume of Divakar Pandey',
-      icon: '📄',
+      icon: <IconDocument size={16} />,
       shortcut: 'CV',
       perform: () => {
         const link = document.createElement('a');
@@ -20,7 +34,7 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        onShowToast('Resume download started! 📄', '📥');
+        onShowToast('Resume download started', 'info');
       }
     },
     {
@@ -28,7 +42,7 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Resume & Actions',
       title: '60-Second Executive Recruiter Pitch',
       subtitle: 'Instant candidate merit, academic scores & top projects',
-      icon: '⚡',
+      icon: <IconZap size={16} />,
       shortcut: 'PITCH',
       perform: () => {
         onClose();
@@ -40,10 +54,10 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Resume & Actions',
       title: 'View Resume in New Tab',
       subtitle: 'Open PDF viewer directly',
-      icon: '👁️',
+      icon: <IconExternalLink size={16} />,
       perform: () => {
         window.open('/Divakar_Cv.pdf', '_blank');
-        onShowToast('Opening resume preview...', '👁️');
+        onShowToast('Opening resume preview...', 'info');
       }
     },
     {
@@ -51,7 +65,7 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Navigation',
       title: 'Go to Home / Exhibition',
       subtitle: 'Hero Section',
-      icon: '🏠',
+      icon: <IconHome size={16} />,
       perform: () => onNavigate('hero')
     },
     {
@@ -59,7 +73,7 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Navigation',
       title: 'Go to About Me & Philosophy',
       subtitle: 'Bio, Experience & Engineering Mindset',
-      icon: '👤',
+      icon: <IconUser size={16} />,
       perform: () => onNavigate('about')
     },
     {
@@ -67,7 +81,7 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Navigation',
       title: 'Go to Education & Skills',
       subtitle: 'Degrees, Universities & Tech Stack',
-      icon: '🎓',
+      icon: <IconZap size={16} />,
       perform: () => onNavigate('education-skills')
     },
     {
@@ -75,7 +89,7 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Navigation',
       title: 'Go to Featured Projects',
       subtitle: 'digital-pateri, BharatYatra, NightShield & IoT',
-      icon: '💼',
+      icon: <IconBriefcase size={16} />,
       perform: () => onNavigate('featured-projects')
     },
     {
@@ -83,7 +97,7 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Navigation',
       title: 'Go to Certificates and more',
       subtitle: 'Workshops, NIIT Java, InnoStart',
-      icon: '🏆',
+      icon: <IconAward size={16} />,
       perform: () => onNavigate('certifications')
     },
     {
@@ -91,7 +105,7 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Navigation',
       title: 'Go to Contact / Get In Touch',
       subtitle: 'Email, Phone & Social Channels',
-      icon: '✉️',
+      icon: <IconMail size={16} />,
       perform: () => onNavigate('contact')
     },
     {
@@ -99,7 +113,7 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Archives',
       title: 'View Full Project Gallery (8 Projects)',
       subtitle: 'Complete catalogue with tech breakdowns',
-      icon: '🚀',
+      icon: <IconBriefcase size={16} />,
       perform: () => onOpenArchive('projects-archive')
     },
     {
@@ -107,7 +121,7 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Archives',
       title: 'View Full Academic Timeline',
       subtitle: 'MCA, BCA, PGDCA, B.Sc & O-Level',
-      icon: '📚',
+      icon: <IconAward size={16} />,
       perform: () => onOpenArchive('education-archive')
     },
     {
@@ -115,10 +129,10 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Quick Contact',
       title: 'Copy Email Address',
       subtitle: 'pandeydivakar07@gmail.com',
-      icon: '📬',
+      icon: <IconMail size={16} />,
       perform: () => {
         navigator.clipboard.writeText('pandeydivakar07@gmail.com');
-        onShowToast('Email copied to clipboard! 📋', '✅');
+        onShowToast('Email copied to clipboard', 'info');
       }
     },
     {
@@ -126,10 +140,10 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Quick Contact',
       title: 'Copy Phone Number',
       subtitle: '+91 6394163494',
-      icon: '📱',
+      icon: <IconPhone size={16} />,
       perform: () => {
         navigator.clipboard.writeText('+916394163494');
-        onShowToast('Phone number copied! 📋', '✅');
+        onShowToast('Phone number copied', 'info');
       }
     },
     {
@@ -137,7 +151,7 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Socials',
       title: 'Open GitHub Profile',
       subtitle: 'github.com/divakarpandey07',
-      icon: '🐙',
+      icon: <IconGitHub size={16} />,
       perform: () => window.open('https://github.com/divakarpandey07', '_blank')
     },
     {
@@ -145,44 +159,8 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       category: 'Socials',
       title: 'Open LinkedIn Profile',
       subtitle: 'linkedin.com/in/divakar6394163494',
-      icon: '🔗',
+      icon: <IconLinkedIn size={16} />,
       perform: () => window.open('https://www.linkedin.com/in/divakar6394163494/', '_blank')
-    },
-    {
-      id: 'theme-gold',
-      category: 'Theme Accents',
-      title: 'Switch Accent: Classic Cyber Gold',
-      subtitle: 'Warm luxury aesthetic',
-      icon: '🟡',
-      perform: () => {
-        document.documentElement.style.setProperty('--accent-gold', '#bda07a');
-        document.documentElement.style.setProperty('--accent-gold-hover', '#e8d3b9');
-        onShowToast('Theme accent: Cyber Gold', '🟡');
-      }
-    },
-    {
-      id: 'theme-cyan',
-      category: 'Theme Accents',
-      title: 'Switch Accent: Electric Cyan',
-      subtitle: 'Futuristic sci-fi vibe',
-      icon: '🔵',
-      perform: () => {
-        document.documentElement.style.setProperty('--accent-gold', '#00f0ff');
-        document.documentElement.style.setProperty('--accent-gold-hover', '#70f8ff');
-        onShowToast('Theme accent: Electric Cyan', '🔵');
-      }
-    },
-    {
-      id: 'theme-emerald',
-      category: 'Theme Accents',
-      title: 'Switch Accent: Matrix Emerald',
-      subtitle: 'Clean cyber green',
-      icon: '🟢',
-      perform: () => {
-        document.documentElement.style.setProperty('--accent-gold', '#00e699');
-        document.documentElement.style.setProperty('--accent-gold-hover', '#66ffcc');
-        onShowToast('Theme accent: Matrix Emerald', '🟢');
-      }
     }
   ];
 
@@ -200,31 +178,23 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
     }
   }, [isOpen]);
 
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (!isOpen) return;
-
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        setSelectedIndex((prev) => (prev + 1) % (filtered.length || 1));
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        setSelectedIndex((prev) => (prev - 1 + (filtered.length || 1)) % (filtered.length || 1));
-      } else if (e.key === 'Enter') {
-        e.preventDefault();
-        if (filtered[selectedIndex]) {
-          filtered[selectedIndex].perform();
-          onClose();
-        }
-      } else if (e.key === 'Escape') {
-        e.preventDefault();
+  const handleKeyDown = (e) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setSelectedIndex((prev) => (prev + 1) % (filtered.length || 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setSelectedIndex((prev) => (prev - 1 + filtered.length) % (filtered.length || 1));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (filtered[selectedIndex]) {
+        filtered[selectedIndex].perform();
         onClose();
       }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, filtered, selectedIndex, onClose]);
+    } else if (e.key === 'Escape') {
+      onClose();
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -232,45 +202,46 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
     <div className="cmd-backdrop" onClick={onClose}>
       <div className="cmd-modal" onClick={(e) => e.stopPropagation()}>
         <div className="cmd-header">
-          <span className="cmd-search-icon">🔍</span>
+          <span className="cmd-search-icon"><IconSearch size={16} /></span>
           <input
             ref={inputRef}
             type="text"
             className="cmd-input"
-            placeholder="Type a command or search (e.g. about, resume, projects)..."
+            placeholder="Type a command or search sections..."
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
               setSelectedIndex(0);
             }}
+            onKeyDown={handleKeyDown}
           />
-          <kbd className="cmd-esc-badge" onClick={onClose}>ESC</kbd>
+          <span className="cmd-esc-badge" onClick={onClose}>ESC</span>
         </div>
 
         <div className="cmd-list">
           {filtered.length === 0 ? (
-            <div className="cmd-empty">No matching commands found.</div>
+            <div className="cmd-empty">No commands found for "{query}"</div>
           ) : (
-            filtered.map((item, idx) => (
+            filtered.map((act, index) => (
               <div
-                key={item.id}
-                className={`cmd-item ${idx === selectedIndex ? 'selected' : ''}`}
+                key={act.id}
+                className={`cmd-item ${index === selectedIndex ? 'selected' : ''}`}
                 onClick={() => {
-                  item.perform();
+                  act.perform();
                   onClose();
                 }}
-                onMouseEnter={() => setSelectedIndex(idx)}
+                onMouseEnter={() => setSelectedIndex(index)}
               >
                 <div className="cmd-item-left">
-                  <span className="cmd-item-icon">{item.icon}</span>
+                  <span className="cmd-item-icon">{act.icon}</span>
                   <div>
-                    <div className="cmd-item-title">{item.title}</div>
-                    <div className="cmd-item-subtitle">{item.subtitle}</div>
+                    <div className="cmd-item-title">{act.title}</div>
+                    <div className="cmd-item-subtitle">{act.subtitle}</div>
                   </div>
                 </div>
                 <div className="cmd-item-right">
-                  <span className="cmd-category-tag">{item.category}</span>
-                  {item.shortcut && <kbd className="cmd-kbd">{item.shortcut}</kbd>}
+                  <span className="cmd-category-tag">{act.category}</span>
+                  {act.shortcut && <kbd className="cmd-kbd">{act.shortcut}</kbd>}
                 </div>
               </div>
             ))
@@ -279,8 +250,8 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
 
         <div className="cmd-footer">
           <span>Navigate with <kbd>↑</kbd> <kbd>↓</kbd></span>
-          <span>Select with <kbd>↵ Enter</kbd></span>
-          <span>Close with <kbd>Esc</kbd></span>
+          <span>Select with <kbd>Enter</kbd></span>
+          <span>Close with <kbd>ESC</kbd></span>
         </div>
       </div>
     </div>
