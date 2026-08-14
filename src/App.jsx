@@ -181,8 +181,6 @@ export default function App() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [cursorPos, setCursorPos] = useState({ x: -100, y: -100 });
   const [isHovering, setIsHovering] = useState(false);
-  const [loadingProgress, setLoadingProgress] = useState(0);
-  const [loading, setLoading] = useState(true);
   const [view, setView] = useState('main');
 
   // Interactive states
@@ -220,20 +218,6 @@ export default function App() {
     document.body.removeChild(link);
     showToast('Resume / CV downloaded! 📄', '📥');
   };
-
-  useEffect(() => {
-    let current = 0;
-    const interval = setInterval(() => {
-      current += Math.floor(Math.random() * 18) + 8;
-      if (current >= 100) {
-        current = 100;
-        clearInterval(interval);
-        setTimeout(() => setLoading(false), 250);
-      }
-      setLoadingProgress(current);
-    }, 70);
-    return () => clearInterval(interval);
-  }, []);
 
   // Keyboard shortcuts listener for Cmd+K and ` (Terminal)
   useEffect(() => {
@@ -404,23 +388,11 @@ export default function App() {
 
   return (
     <>
-      {/* Premium Loader */}
-      <div className={`loader-screen ${!loading ? 'hidden' : ''}`}>
-        <div className="loader-logo">DIVAKAR<span>PANDEY</span></div>
-        <div className="loader-bar-bg">
-          <div className="loader-bar" style={{ width: `${loadingProgress}%` }}></div>
-        </div>
-        <div className="loader-number">{loadingProgress}%</div>
-        <p className="loader-tip">LOADING 3D COMPUTING EXHIBITION...</p>
-      </div>
-
       {/* Floating Custom Cursor */}
-      {!loading && (
-        <div
-          className={`cursor-follower ${isHovering ? 'hovering' : ''}`}
-          style={{ left: `${cursorPos.x}px`, top: `${cursorPos.y}px` }}
-        />
-      )}
+      <div
+        className={`cursor-follower ${isHovering ? 'hovering' : ''}`}
+        style={{ left: `${cursorPos.x}px`, top: `${cursorPos.y}px` }}
+      />
 
       {/* Toast Notification */}
       <Toast visible={toast.visible} message={toast.message} icon={toast.icon} />
@@ -462,7 +434,7 @@ export default function App() {
 
         {/* 3D Canvas Background */}
         <div className="canvas-bg" aria-hidden="true">
-          <ThreeScene modelPath="/model.glb" scrollProgress={scrollProgress} />
+          <ThreeScene scrollProgress={scrollProgress} />
         </div>
 
         {view === 'main' ? (
