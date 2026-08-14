@@ -1,9 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function ProjectModal({ project, onClose }) {
+  const [activeStepIndex, setActiveStepIndex] = useState(0);
+
+  useEffect(() => {
+    setActiveStepIndex(0);
+  }, [project]);
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') onClose();
+      if (e.key === 'ArrowRight' && project?.architectureFlow) {
+        setActiveStepIndex((prev) => Math.min(prev + 1, project.architectureFlow.length - 1));
+      }
+      if (e.key === 'ArrowLeft' && project?.architectureFlow) {
+        setActiveStepIndex((prev) => Math.max(prev - 1, 0));
+      }
     };
     if (project) {
       document.body.style.overflow = 'hidden';
@@ -16,6 +28,10 @@ export default function ProjectModal({ project, onClose }) {
   }, [project, onClose]);
 
   if (!project) return null;
+
+  const currentStep = project.architectureFlow && project.architectureFlow[activeStepIndex]
+    ? project.architectureFlow[activeStepIndex]
+    : null;
 
   return (
     <div className="project-modal-backdrop" onClick={onClose}>
@@ -45,24 +61,78 @@ export default function ProjectModal({ project, onClose }) {
             <p>{project.longDesc || project.desc}</p>
           </div>
 
-          {/* Visual System Architecture Pipeline */}
+          {/* Interactive System Architecture Blueprint / Node Inspector */}
           {project.architectureFlow && project.architectureFlow.length > 0 && (
             <div className="project-modal-section">
-              <h4>System Architecture Flow</h4>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <h4>Interactive System Architecture Blueprint</h4>
+                <span className="arch-inspector-hint">Click a node to inspect payload &amp; telemetry</span>
+              </div>
+
+              {/* Node Pipeline Buttons */}
               <div className="arch-pipeline-container">
                 {project.architectureFlow.map((step, idx) => (
                   <React.Fragment key={idx}>
-                    <div className="arch-step-box">
+                    <button
+                      type="button"
+                      className={`arch-step-box interactive-node ${idx === activeStepIndex ? 'active-node' : ''}`}
+                      onClick={() => setActiveStepIndex(idx)}
+                      title={`Inspect ${step.title}`}
+                    >
                       <span className="arch-step-num">0{idx + 1}</span>
                       <span className="arch-step-title">{step.title}</span>
                       <span className="arch-step-detail">{step.detail}</span>
-                    </div>
+                    </button>
                     {idx < project.architectureFlow.length - 1 && (
                       <div className="arch-connector">→</div>
                     )}
                   </React.Fragment>
                 ))}
               </div>
+
+              {/* Node Inspector Deep Dive Box */}
+              {currentStep && (
+                <div className="arch-node-inspector">
+                  <div className="inspector-top-row">
+                    <div>
+                      <span className="inspector-badge">STAGE 0{activeStepIndex + 1} INSPECTOR</span>
+                      <span className="inspector-node-name">{currentStep.title}</span>
+                    </div>
+                    <div className="inspector-telemetry-tags">
+                      {currentStep.latency && (
+                        <span className="inspector-tag latency">Latency: {currentStep.latency}</span>
+                      )}
+                      {currentStep.security && (
+                        <span className="inspector-tag security">Protocol: {currentStep.security}</span>
+                      )}
+                    </div>
+                  </div>
+
+                  <p className="inspector-spec-text">
+                    {currentStep.spec || currentStep.detail}
+                  </p>
+
+                  <div className="inspector-nav-bar">
+                    <button
+                      className="inspector-nav-btn"
+                      disabled={activeStepIndex === 0}
+                      onClick={() => setActiveStepIndex((prev) => Math.max(prev - 1, 0))}
+                    >
+                      ← Previous Node
+                    </button>
+                    <span className="inspector-step-indicator">
+                      Step {activeStepIndex + 1} of {project.architectureFlow.length}
+                    </span>
+                    <button
+                      className="inspector-nav-btn"
+                      disabled={activeStepIndex === project.architectureFlow.length - 1}
+                      onClick={() => setActiveStepIndex((prev) => Math.min(prev + 1, project.architectureFlow.length - 1))}
+                    >
+                      Next Node →
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
