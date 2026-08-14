@@ -400,16 +400,51 @@ export default function App() {
     return p.category === projectCategory;
   });
 
-  const handleContactSubmit = (e) => {
+  const [formStatus, setFormStatus] = useState(null); // null | 'sending' | 'success' | 'error'
+
+  const handleContactSubmit = async (e) => {
     e.preventDefault();
     setFormSending(true);
-    setTimeout(() => {
+    setFormStatus('sending');
+
+    try {
+      const res = await fetch('https://formsubmit.co/ajax/pandeydivakar07@gmail.com', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          name: contactForm.name,
+          email: contactForm.email,
+          message: contactForm.message,
+          _subject: `🚀 Portfolio Message from ${contactForm.name}`,
+          _template: 'table',
+          _captcha: 'false'
+        })
+      });
+
+      const data = await res.json();
+
+      if (res.ok && (data.success === 'true' || data.success === true)) {
+        setFormSending(false);
+        setFormStatus('success');
+        setContactForm({ name: '', email: '', message: '' });
+        showToast('Message delivered directly to Divakar\'s Inbox! 🚀', '✅');
+        setTimeout(() => setFormStatus(null), 6000);
+      } else {
+        throw new Error('Direct submission failed');
+      }
+    } catch {
+      // Graceful fallback to mail client
       setFormSending(false);
-      setContactForm({ name: '', email: '', message: '' });
-      showToast('Thank you! Your message has been prepared.', '🚀');
+      setFormStatus('fallback');
+      showToast('Opening mail client to complete dispatch...', '✉️');
       window.location.href = `mailto:pandeydivakar07@gmail.com?subject=Contact from ${encodeURIComponent(contactForm.name)}&body=${encodeURIComponent(contactForm.message)}%0A%0AFrom: ${encodeURIComponent(contactForm.email)}`;
-    }, 600);
+      setTimeout(() => setFormStatus(null), 6000);
+    }
   };
+
 
   return (
     <>
@@ -1094,6 +1129,17 @@ export default function App() {
                   </div>
 
                   <form className="contact-quick-form" onSubmit={handleContactSubmit}>
+                    {formStatus === 'success' && (
+                      <div className="form-status-banner success">
+                        <span>✅ Message sent directly to Divakar's Gmail inbox! Expect a prompt reply.</span>
+                      </div>
+                    )}
+                    {formStatus === 'sending' && (
+                      <div className="form-status-banner sending">
+                        <span>⏳ Transmitting message securely to pandeydivakar07@gmail.com...</span>
+                      </div>
+                    )}
+
                     <div className="form-row">
                       <input
                         type="text"
@@ -1102,6 +1148,7 @@ export default function App() {
                         className="form-input"
                         value={contactForm.name}
                         onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
+                        disabled={formSending}
                       />
                       <input
                         type="email"
@@ -1110,6 +1157,7 @@ export default function App() {
                         className="form-input"
                         value={contactForm.email}
                         onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+                        disabled={formSending}
                       />
                     </div>
                     <textarea
@@ -1119,11 +1167,13 @@ export default function App() {
                       className="form-input form-textarea"
                       value={contactForm.message}
                       onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+                      disabled={formSending}
                     />
                     <button type="submit" className="btn-primary" disabled={formSending}>
-                      <span>{formSending ? 'Preparing Dispatch...' : 'Send Message 🚀'}</span>
+                      <span>{formSending ? 'Transmitting to Gmail...' : 'Send Message 🚀'}</span>
                     </button>
                   </form>
+
 
                   <div style={{ marginTop: '40px', borderTop: '1px solid rgba(255, 255, 255, 0.05)', paddingTop: '20px', textAlign: 'center' }}>
                     <p style={{ fontSize: '0.72rem', margin: 0, fontFamily: 'var(--font-accent)', letterSpacing: '1.5px', textTransform: 'uppercase' }}>
