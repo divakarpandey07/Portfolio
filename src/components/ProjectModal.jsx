@@ -25,11 +25,11 @@ export default function ProjectModal({ project, onClose }) {
         </button>
 
         <div className="project-modal-header">
-          <span className="accent-text" style={{ fontSize: '0.7rem' }}>CASE STUDY // SPOTLIGHT</span>
+          <span className="accent-text" style={{ fontSize: '0.7rem' }}>CASE STUDY // DEEP DIVE</span>
           <h2 className="project-modal-title">{project.title}</h2>
           <div className="project-modal-meta">
             <span className="timeline-date">{project.date}</span>
-            {project.category && <span className="project-category-badge">{project.category}</span>}
+            {project.categoryLabel && <span className="project-category-tag">{project.categoryLabel}</span>}
           </div>
         </div>
 
@@ -41,13 +41,34 @@ export default function ProjectModal({ project, onClose }) {
 
         <div className="project-modal-body">
           <div className="project-modal-section">
-            <h4>Overview &amp; Purpose</h4>
+            <h4>Overview &amp; Problem Statement</h4>
             <p>{project.longDesc || project.desc}</p>
           </div>
 
+          {/* Visual System Architecture Pipeline */}
+          {project.architectureFlow && project.architectureFlow.length > 0 && (
+            <div className="project-modal-section">
+              <h4>System Architecture Flow</h4>
+              <div className="arch-pipeline-container">
+                {project.architectureFlow.map((step, idx) => (
+                  <React.Fragment key={idx}>
+                    <div className="arch-step-box">
+                      <span className="arch-step-num">0{idx + 1}</span>
+                      <span className="arch-step-title">{step.title}</span>
+                      <span className="arch-step-detail">{step.detail}</span>
+                    </div>
+                    {idx < project.architectureFlow.length - 1 && (
+                      <div className="arch-connector">➔</div>
+                    )}
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
+          )}
+
           {project.highlights && project.highlights.length > 0 && (
             <div className="project-modal-section">
-              <h4>Key Architecture &amp; Features</h4>
+              <h4>Key Engineering Highlights</h4>
               <ul className="project-modal-list">
                 {project.highlights.map((point, idx) => (
                   <li key={idx}>

@@ -2048,8 +2048,228 @@ p {
 }
 
 /* ==========================================================================
+   DYNAMIC TYPEWRITER TAGLINE
+   ========================================================================== */
+
+.typewriter-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(189, 160, 122, 0.08);
+  border: 1px solid rgba(189, 160, 122, 0.25);
+  padding: 6px 14px;
+  border-radius: 4px;
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--accent-gold);
+  letter-spacing: 0.5px;
+  width: fit-content;
+}
+
+.typewriter-prefix {
+  color: var(--accent-gold);
+  font-weight: 700;
+}
+
+.typewriter-text {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.typewriter-cursor {
+  color: var(--accent-gold);
+  font-weight: 700;
+  animation: blinkCursor 0.8s infinite;
+}
+
+@keyframes blinkCursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ==========================================================================
+   SYSTEM ARCHITECTURE PIPELINE IN MODAL
+   ========================================================================== */
+
+.arch-pipeline-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 10px 4px 14px;
+  margin-top: 8px;
+  scrollbar-width: thin;
+}
+
+.arch-step-box {
+  background: #050710;
+  border: 1px solid rgba(189, 160, 122, 0.25);
+  border-radius: 4px;
+  padding: 10px 12px;
+  min-width: 120px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.arch-step-num {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--accent-gold);
+  font-weight: 700;
+}
+
+.arch-step-title {
+  font-family: var(--font-accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-transform: uppercase;
+}
+
+.arch-step-detail {
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  line-height: 1.35;
+}
+
+.arch-connector {
+  color: var(--accent-gold);
+  font-size: 0.9rem;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   GITHUB ACTIVITY & LANGUAGES CARD
+   ========================================================================== */
+
+.github-stats-card {
+  background: #04060e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 20px 22px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+}
+
+.github-stats-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.github-user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.github-icon {
+  font-size: 1.6rem;
+}
+
+.github-username {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.github-subtitle {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.github-lang-bar-container {
+  margin-top: 18px;
+}
+
+.github-lang-bar {
+  height: 8px;
+  width: 100%;
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.github-lang-segment {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.github-lang-legends {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.github-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.legend-name {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.legend-pct {
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+}
+
+.github-metrics-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.github-metric-box {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 8px 12px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.metric-val {
+  display: block;
+  font-family: var(--font-accent);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+}
+
+.metric-lbl {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
    RESPONSIVE DESIGN & ULTRA-FAST MOBILE OPTIMIZATIONS
    ========================================================================== */
+
 
 @media (max-width: 992px) {
   .scroll-section {

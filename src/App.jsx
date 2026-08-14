@@ -8,13 +8,15 @@ import MobileNav from './components/MobileNav';
 import TerminalModal from './components/TerminalModal';
 import CodeSpotlight from './components/CodeSpotlight';
 import ThemeSwitcher from './components/ThemeSwitcher';
+import Typewriter from './components/Typewriter';
+import GithubStatsCard from './components/GithubStatsCard';
 
 const SECTIONS = [
   { id: 'hero', label: 'Home' },
   { id: 'about', label: 'About Me' },
   { id: 'education-skills', label: 'Education & Skills' },
   { id: 'featured-projects', label: 'Featured Projects' },
-  { id: 'certifications', label: 'Certifications' },
+  { id: 'certifications', label: 'Certificates and more' },
   { id: 'contact', label: 'Contact' }
 ];
 
@@ -27,6 +29,12 @@ const ALL_PROJECTS = [
     categoryLabel: 'Full-Stack & AI',
     desc: 'Smart Village Governance Portal for citizen services, grievance tickets, document vaults, and AI-assisted support in Pateri Gram Panchayat.',
     longDesc: 'A comprehensive digital governance initiative engineered for Pateri Gram Panchayat. It digitizes administrative public services, streamlines citizen grievance lodging, provides secure digital document vaults, and integrates Google Gemini AI for instant multilingual citizen guidance and form assistance.',
+    architectureFlow: [
+      { title: 'Citizen Interface', detail: 'React.js & Tailwind responsive portal' },
+      { title: 'API Gateway', detail: 'Express.js & Node REST controllers' },
+      { title: 'AI Engine', detail: 'Gemini 1.5 Flash assistant & classification' },
+      { title: 'Data Layer', detail: 'MongoDB Atlas & secure document vault' }
+    ],
     highlights: [
       'Engineered citizen grievance redressal pipeline with real-time status tracking and automated officer routing.',
       'Integrated Google Gemini AI assistant for voice/text civic inquiries and automated government scheme recommendations.',
@@ -46,6 +54,12 @@ const ALL_PROJECTS = [
     categoryLabel: 'Full-Stack Web',
     desc: 'A premium web application designed for interactive travel planning and destination discovery across India with rich visual media.',
     longDesc: 'BharatYatra is an immersive travel exploration and itinerary planning platform. It enables tourists to explore Indian heritage, discover hidden cultural destinations, calculate regional travel budgets, and create personalized travel itineraries.',
+    architectureFlow: [
+      { title: 'Client UI', detail: 'React.js & TypeScript with Framer Motion' },
+      { title: 'Routing Engine', detail: 'Interactive state & destination filters' },
+      { title: 'Budget Calculator', detail: 'Real-time regional cost estimation' },
+      { title: 'Edge Cloud', detail: 'Vercel global low-latency CDN' }
+    ],
     highlights: [
       'Interactive regional destination guides with curated media and high-resolution visual storytelling.',
       'Real-time itinerary builder with dynamic budget estimates and transit mapping.',
@@ -64,6 +78,12 @@ const ALL_PROJECTS = [
     categoryLabel: 'Mobile & Security',
     desc: 'Developed a secure real-time messaging mobile application using Java and Android Studio, integrated with end-to-end AES encryption.',
     longDesc: 'NightShield is an enterprise-grade secure instant messaging Android application designed for encrypted communications. It features client-side cryptographic hashing, AES-256 cipher pipelines, and private channel key exchanges.',
+    architectureFlow: [
+      { title: 'Android UI', detail: 'Native Java & Material Design 3' },
+      { title: 'Client Crypto', detail: 'AES-256 GCM cipher & key hashing' },
+      { title: 'Sync Pipeline', detail: 'Firebase Realtime Database sockets' },
+      { title: 'Decryption Vault', detail: 'Client-side verification & rendering' }
+    ],
     highlights: [
       'Implemented end-to-end AES-256 encryption with custom byte encoding/decoding on mobile devices.',
       'Engineered real-time socket-like messaging using Firebase Realtime Database and Cloud Messaging.',
@@ -81,6 +101,12 @@ const ALL_PROJECTS = [
     categoryLabel: 'IoT & Systems',
     desc: 'Automated smart classroom system utilizing NodeMCU ESP8266 and ESP32 with RFID door access, climate telemetry, and automated occupancy sensors.',
     longDesc: 'Designed and deployed an integrated smart classroom environment to automate attendance, power management, and room environment control. Features secure RFID card student check-in, ultrasonic automated seating counters, and DHT11 climate telemetry.',
+    architectureFlow: [
+      { title: 'Hardware Edge', detail: 'ESP32 & NodeMCU microcontrollers (C++)' },
+      { title: 'Sensor Hub', detail: 'RFID RC522, PIR motion & DHT11 sensors' },
+      { title: 'Cloud Sync', detail: 'Firebase Realtime Database live sync' },
+      { title: 'Actuators', detail: 'Automated relays for lights & fans' }
+    ],
     highlights: [
       'Built hardware firmware in C++ (Arduino IDE) with NodeMCU ESP8266 and ESP32 microcontrollers.',
       'Integrated Firebase Realtime Database for instant synchronization of telemetry and attendance records.',
@@ -98,6 +124,11 @@ const ALL_PROJECTS = [
     categoryLabel: 'Full-Stack Web',
     desc: 'An ecological tracking dashboard that calculates carbon footprints and visualizes environment impact stats with clean analytics.',
     longDesc: 'Carbon-Tracker helps individuals and organizations calculate their carbon emissions across travel, electricity, diet, and lifestyle, presenting actionable reduction recommendations and interactive data charts.',
+    architectureFlow: [
+      { title: 'Telemetry Input', detail: 'Travel, energy & lifestyle metrics form' },
+      { title: 'Emission Engine', detail: 'Verified climate emission factor algorithms' },
+      { title: 'Analytics UI', detail: 'Chart.js dynamic visual breakdowns' }
+    ],
     highlights: [
       'Dynamic carbon footprint estimation algorithms based on verified climate emission factors.',
       'Interactive data charts and visual breakdowns for personal sustainability goals.',
@@ -116,6 +147,12 @@ const ALL_PROJECTS = [
     categoryLabel: 'AI & Machine Learning',
     desc: 'Machine Learning-based Network Intrusion Detection System classifying anomalies in traffic using the CICIDS2017 dataset.',
     longDesc: 'CyberGuard is a cyber defense system utilizing machine learning classifiers (Random Forests, XGBoost, Support Vector Machines) to identify, flag, and classify network attack vectors (DDoS, PortScans, BruteForce) in real-time.',
+    architectureFlow: [
+      { title: 'Network Stream', detail: 'CICIDS2017 flow data packet ingestion' },
+      { title: 'Feature Pipeline', detail: 'Pandas & NumPy statistical normalization' },
+      { title: 'ML Classifier', detail: 'XGBoost & Random Forest 98.4% model' },
+      { title: 'Alert Console', detail: 'Automated intrusion threat reporting' }
+    ],
     highlights: [
       'Processed and engineered feature pipelines on high-dimensional network flow data (CICIDS2017).',
       'Achieved over 98.4% classification accuracy across multi-class intrusion categories.',
@@ -133,6 +170,11 @@ const ALL_PROJECTS = [
     categoryLabel: 'Full-Stack Web',
     desc: 'Student PG and hostel listing finder application designed for seamless search, filter, and campus housing navigation.',
     longDesc: 'A campus housing marketplace built to help students discover verified PGs, compare amenities, check pricing, and connect directly with property managers without broker intermediaries.',
+    architectureFlow: [
+      { title: 'Search UI', detail: 'Budget, distance & amenities filter form' },
+      { title: 'Server Logic', detail: 'PHP backend controllers & validation' },
+      { title: 'Relational DB', detail: 'MySQL schema & photo galleries' }
+    ],
     highlights: [
       'Engineered multi-parameter search (budget, distance from college, food inclusion, room sharing).',
       'Built secure relational database architecture using MySQL and backend logic in PHP.',
@@ -151,6 +193,10 @@ const ALL_PROJECTS = [
     categoryLabel: 'Interactive Web',
     desc: 'An educational, interactive chemistry periodic table visualization with clean layout and detailed element properties.',
     longDesc: 'An interactive scientific web tool visualizing all 118 chemical elements with electronic configuration, oxidation states, atomic radii, and orbital models in real-time.',
+    architectureFlow: [
+      { title: 'Element Matrix', detail: '118 elements grid with periodic grouping' },
+      { title: 'Property Engine', detail: 'Dynamic orbital & atomic state modals' }
+    ],
     highlights: [
       'Interactive element grid with instant property modals and group/period filter highlighting.',
       'Lightweight vanilla JavaScript architecture with zero heavy dependencies.'
@@ -192,6 +238,7 @@ export default function App() {
   const [toast, setToast] = useState({ visible: false, message: '', icon: '✨' });
   const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
   const [formSending, setFormSending] = useState(false);
+  const [formStatus, setFormStatus] = useState(null); // null | 'sending' | 'success' | 'fallback'
 
   const sectionRefs = {
     hero: useRef(null),
@@ -270,7 +317,6 @@ export default function App() {
     };
 
     if (!isTouch) {
-      // Desktop: Silk smooth wheel
       lenis = new Lenis({
         duration: 1.0,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -287,14 +333,13 @@ export default function App() {
       requestAnimationFrame(raf);
       lenis.on('scroll', handleScrollUpdate);
     } else {
-      // Mobile: 100% Native 120Hz Hardware Momentum Scrolling with zero touch interception
       window.addEventListener('scroll', handleScrollUpdate, { passive: true });
     }
 
     setTimeout(handleScrollUpdate, 100);
 
     const handleResize = () => handleScrollUpdate();
-    window.addEventListener('resize', handleResize, { passive: true });
+    window.addEventListener('resize', handleResize);
 
     return () => {
       if (rafId) cancelAnimationFrame(rafId);
@@ -400,8 +445,6 @@ export default function App() {
     return p.category === projectCategory;
   });
 
-  const [formStatus, setFormStatus] = useState(null); // null | 'sending' | 'success' | 'error'
-
   const handleContactSubmit = async (e) => {
     e.preventDefault();
     setFormSending(true);
@@ -436,7 +479,6 @@ export default function App() {
         throw new Error('Direct submission failed');
       }
     } catch {
-      // Graceful fallback to mail client
       setFormSending(false);
       setFormStatus('fallback');
       showToast('Opening mail client to complete dispatch...', '✉️');
@@ -444,7 +486,6 @@ export default function App() {
       setTimeout(() => setFormStatus(null), 6000);
     }
   };
-
 
   return (
     <>
@@ -588,6 +629,9 @@ export default function App() {
                   <h1 className="shimmer-title hero-heading">
                     Creative<br />Developer.
                   </h1>
+
+                  {/* Dynamic Typewriter Role Tagline */}
+                  <Typewriter />
 
                   <div className="divider"></div>
 
@@ -971,10 +1015,18 @@ export default function App() {
                     </div>
                     <CodeSpotlight onShowToast={showToast} />
                   </div>
+
+                  {/* GitHub Activity & Language Breakdown Card */}
+                  <div style={{ marginTop: '32px' }}>
+                    <div style={{ marginBottom: '14px' }}>
+                      <span className="accent-text" style={{ fontSize: '0.65rem' }}>OPEN SOURCE &amp; REPOSITORY STATS</span>
+                    </div>
+                    <GithubStatsCard />
+                  </div>
                 </div>
               </section>
 
-              {/* SECTION 5: CERTIFICATIONS */}
+              {/* SECTION 5: CERTIFICATES AND MORE */}
               <section
                 id="certifications"
                 ref={sectionRefs.certifications}
@@ -1017,7 +1069,7 @@ export default function App() {
                       window.scrollTo({ top: 0 });
                     }}
                   >
-                    View All 7 Certifications &amp; Hackathons →
+                    View All 7 Certificates &amp; Hackathons →
                   </button>
                 </div>
               </section>
@@ -1173,7 +1225,6 @@ export default function App() {
                       <span>{formSending ? 'Transmitting to Gmail...' : 'Send Message 🚀'}</span>
                     </button>
                   </form>
-
 
                   <div style={{ marginTop: '40px', borderTop: '1px solid rgba(255, 255, 255, 0.05)', paddingTop: '20px', textAlign: 'center' }}>
                     <p style={{ fontSize: '0.72rem', margin: 0, fontFamily: 'var(--font-accent)', letterSpacing: '1.5px', textTransform: 'uppercase' }}>
