@@ -43,6 +43,14 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
       perform: () => onNavigate('hero')
     },
     {
+      id: 'nav-about',
+      category: 'Navigation',
+      title: 'Go to About Me & Philosophy',
+      subtitle: 'Bio, Experience & Engineering Mindset',
+      icon: '👤',
+      perform: () => onNavigate('about')
+    },
+    {
       id: 'nav-education',
       category: 'Navigation',
       title: 'Go to Education & Skills',
@@ -217,7 +225,7 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
             ref={inputRef}
             type="text"
             className="cmd-input"
-            placeholder="Type a command or search (e.g. resume, projects, email)..."
+            placeholder="Type a command or search (e.g. about, resume, projects)..."
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);

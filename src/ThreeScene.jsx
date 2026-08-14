@@ -3,30 +3,35 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useGLTF, Environment } from '@react-three/drei';
 
-// Predefined camera checkpoints (Position & Target LookAt) for cinematic sweeps
+// Predefined camera checkpoints (Position & Target LookAt) for 6 cinematic sections
 const KEYFRAMES = [
   {
-    progress: 0.0,
+    progress: 0.0, // Hero
     pos: [0, 2.0, 7.0],
     target: [0, 0.2, 0]
   },
   {
-    progress: 0.25,
+    progress: 0.2, // About Me
+    pos: [-3.8, 1.4, 4.2],
+    target: [0.0, 0.4, 0.0]
+  },
+  {
+    progress: 0.4, // Education & Skills
     pos: [3.8, 1.2, 3.2],
     target: [0.0, 0.5, 0.0]
   },
   {
-    progress: 0.5,
+    progress: 0.6, // Featured Projects
     pos: [-3.5, -0.6, 2.8],
     target: [0.0, 0.3, 0.0]
   },
   {
-    progress: 0.75,
+    progress: 0.8, // Certifications
     pos: [0.4, 3.6, 2.5],
     target: [0.0, 0.6, -0.5]
   },
   {
-    progress: 1.0,
+    progress: 1.0, // Contact
     pos: [-4.8, 2.8, 6.5],
     target: [0, 0.2, 0]
   }
@@ -97,7 +102,6 @@ function ProceduralMockRoom() {
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
   const particleCount = isMobile ? 180 : 380;
 
-  // Initialize particle points
   const [positions, velocities] = useMemo(() => {
     const pos = new Float32Array(particleCount * 3);
     const vel = new Float32Array(particleCount * 3);
@@ -203,10 +207,8 @@ function ProceduralMockRoom() {
 
   return (
     <group position={[0, -0.5, 0]} rotation={[0, -Math.PI / 4, 0]}>
-      {/* Floor Cyber Grid */}
       <gridHelper args={[16, 16, '#bda07a', '#0a101d']} position={[0, -0.1, 0]} />
 
-      {/* Central Cyber Sphere */}
       <mesh ref={blobRef} position={[0, 0.8, 0]}>
         <sphereGeometry args={[1.25, 24, 24]} />
         <meshStandardMaterial
@@ -214,11 +216,9 @@ function ProceduralMockRoom() {
           emissive="#061224"
           roughness={0.1}
           metalness={0.9}
-          wireframe={false}
         />
       </mesh>
 
-      {/* Orbital Gold Gyroscope Rings */}
       <mesh ref={ring1Ref} position={[0, 0.8, 0]}>
         <torusGeometry args={[1.75, 0.015, 12, 48]} />
         <meshStandardMaterial color="#bda07a" emissive="#bda07a" emissiveIntensity={0.8} />
@@ -229,7 +229,6 @@ function ProceduralMockRoom() {
         <meshStandardMaterial color="#00f0ff" emissive="#00f0ff" emissiveIntensity={0.6} />
       </mesh>
 
-      {/* Particle Swarm */}
       <points ref={pointsRef}>
         <bufferGeometry>
           <bufferAttribute
@@ -248,7 +247,6 @@ function ProceduralMockRoom() {
         />
       </points>
 
-      {/* Floating CS Bits */}
       {csBits.map((bit, idx) => (
         <mesh
           key={idx}

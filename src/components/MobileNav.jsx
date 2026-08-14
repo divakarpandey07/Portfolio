@@ -3,6 +3,7 @@ import React from 'react';
 export default function MobileNav({ activeSection, onNavigate, onOpenCommandPalette }) {
   const navItems = [
     { id: 'hero', label: 'Home', icon: '🏠' },
+    { id: 'about', label: 'About', icon: '👤' },
     { id: 'education-skills', label: 'Skills', icon: '⚡' },
     { id: 'featured-projects', label: 'Work', icon: '💼' },
     { id: 'certifications', label: 'Certs', icon: '🏆' },

@@ -8,6 +8,7 @@ import MobileNav from './components/MobileNav';
 
 const SECTIONS = [
   { id: 'hero', label: 'Home' },
+  { id: 'about', label: 'About Me' },
   { id: 'education-skills', label: 'Education & Skills' },
   { id: 'featured-projects', label: 'Featured Projects' },
   { id: 'certifications', label: 'Certifications' },
@@ -166,7 +167,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState('main');
 
-  // New interactive states
+  // Interactive states
   const [cmdOpen, setCmdOpen] = useState(false);
   const [modalProject, setModalProject] = useState(null);
   const [projectCategory, setProjectCategory] = useState('all');
@@ -176,6 +177,7 @@ export default function App() {
 
   const sectionRefs = {
     hero: useRef(null),
+    about: useRef(null),
     'education-skills': useRef(null),
     'featured-projects': useRef(null),
     certifications: useRef(null),
@@ -199,7 +201,6 @@ export default function App() {
     showToast('Resume / CV downloaded! 📄', '📥');
   };
 
-  // Loader simulation
   useEffect(() => {
     let current = 0;
     const interval = setInterval(() => {
@@ -214,7 +215,6 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // Keyboard shortcut listener for Cmd+K / Ctrl+K
   useEffect(() => {
     const handleKeyDown = (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -389,7 +389,7 @@ export default function App() {
   // 3D Card Tilt on desktop
   useEffect(() => {
     if (window.innerWidth < 768) return;
-    const cards = document.querySelectorAll('.glass-card, .project-card');
+    const cards = document.querySelectorAll('.glass-card, .project-card, .about-portrait-card');
     let rafId = null;
 
     const handleMove = (e) => {
@@ -639,11 +639,11 @@ export default function App() {
 
                     <button
                       className="btn-outline"
-                      onClick={() => scrollToSection('featured-projects')}
-                      id="hero-view-work-btn"
+                      onClick={() => scrollToSection('about')}
+                      id="hero-about-btn"
                     >
-                      <span>Explore Projects</span>
-                      <span className="btn-icon">↓</span>
+                      <span>About Me &amp; Vision</span>
+                      <span className="btn-icon">👤</span>
                     </button>
                   </div>
 
@@ -696,7 +696,113 @@ export default function App() {
                 </div>
               </section>
 
-              {/* SECTION 2: EDUCATION & SKILLS */}
+              {/* SECTION 2: ABOUT ME & PHILOSOPHY */}
+              <section
+                id="about"
+                ref={sectionRefs.about}
+                className={`scroll-section align-center ${activeSection === 'about' ? 'visible' : ''}`}
+              >
+                <div className="glass-card about-card" style={{ maxWidth: '880px' }}>
+                  <div className="about-layout-grid">
+                    {/* Left: Professional Portrait Frame */}
+                    <div className="about-portrait-wrapper">
+                      <div className="about-portrait-card">
+                        <img
+                          src="/divakar_profile.jpg"
+                          alt="Divakar Pandey in professional blue suit"
+                          className="about-portrait-img"
+                        />
+                        <div className="about-portrait-glow" />
+                        <div className="about-portrait-badge">
+                          <span className="badge-dot" />
+                          <span>MCA SOFTWARE ENGINEER</span>
+                        </div>
+                      </div>
+
+                      {/* Stat Metrics Box */}
+                      <div className="about-stat-strip">
+                        <div className="stat-box">
+                          <span className="stat-number">8+</span>
+                          <span className="stat-label">Projects</span>
+                        </div>
+                        <div className="stat-box">
+                          <span className="stat-number">MCA</span>
+                          <span className="stat-label">7.36 CGPA</span>
+                        </div>
+                        <div className="stat-box">
+                          <span className="stat-number">7+</span>
+                          <span className="stat-label">Certs &amp; Events</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right: Narrative Story & Engineering Mindset */}
+                    <div className="about-content-wrapper">
+                      <span className="accent-text line-wrapper">
+                        <span className="reveal-line stagger-1">BIOGRAPHY &amp; VISION</span>
+                      </span>
+                      <h2 className="line-wrapper" style={{ fontSize: '2.3rem', marginTop: '4px' }}>
+                        <span className="reveal-line stagger-2">Engineering with Purpose.</span>
+                      </h2>
+
+                      <div className="divider" style={{ margin: '20px 0' }}></div>
+
+                      <p className="about-bio-text">
+                        Hello! I'm <strong>Divakar Pandey</strong>, a developer dedicated to turning complex system architectures, cloud backends, and applied artificial intelligence into clean, human-centered digital experiences.
+                      </p>
+
+                      <p className="about-bio-text" style={{ marginTop: '12px' }}>
+                        Whether building <strong>digital-pateri</strong> to empower rural citizens with AI-assisted Gram Panchayat governance, designing <strong>NightShield</strong> with client-side AES cryptography, or architecting IoT embedded hardware solutions — I approach every challenge with rigorous problem-solving, structured engineering, and aesthetic precision.
+                      </p>
+
+                      {/* 3 Core Engineering Pillars */}
+                      <div className="about-pillars">
+                        <div className="pillar-item">
+                          <div className="pillar-icon">⚡</div>
+                          <div>
+                            <div className="pillar-title">Scalable Architecture</div>
+                            <div className="pillar-desc">Clean, decoupled React/Node codebases, resilient MongoDB/SQL schemas, and REST/microservices.</div>
+                          </div>
+                        </div>
+
+                        <div className="pillar-item">
+                          <div className="pillar-icon">🤖</div>
+                          <div>
+                            <div className="pillar-title">Applied AI &amp; Intelligence</div>
+                            <div className="pillar-desc">Integrating Gemini AI LLM agents and machine learning intrusion anomaly classifiers into production workflows.</div>
+                          </div>
+                        </div>
+
+                        <div className="pillar-item">
+                          <div className="pillar-icon">🛡️</div>
+                          <div>
+                            <div className="pillar-title">Security &amp; Hardware Edge</div>
+                            <div className="pillar-desc">AES-256 mobile encryption, role-based auth, and ESP32/NodeMCU IoT sensor networks.</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Action Links */}
+                      <div className="about-actions" style={{ marginTop: '24px', display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
+                        <button
+                          className="btn-primary-small"
+                          onClick={handleDownloadCV}
+                        >
+                          📄 Download Full Resume (PDF)
+                        </button>
+                        <button
+                          className="btn-outline-small"
+                          onClick={() => scrollToSection('featured-projects')}
+                        >
+                          Explore Selected Work ↓
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* SECTION 3: EDUCATION & SKILLS */}
               <section
                 id="education-skills"
                 ref={sectionRefs['education-skills']}
@@ -768,7 +874,7 @@ export default function App() {
                 </div>
               </section>
 
-              {/* SECTION 3: FEATURED PROJECTS */}
+              {/* SECTION 4: FEATURED PROJECTS */}
               <section
                 id="featured-projects"
                 ref={sectionRefs['featured-projects']}
@@ -883,7 +989,7 @@ export default function App() {
                 </div>
               </section>
 
-              {/* SECTION 4: CERTIFICATIONS */}
+              {/* SECTION 5: CERTIFICATIONS */}
               <section
                 id="certifications"
                 ref={sectionRefs.certifications}
@@ -935,7 +1041,7 @@ export default function App() {
                 </div>
               </section>
 
-              {/* SECTION 5: CONTACT & RESUME */}
+              {/* SECTION 6: CONTACT & RESUME */}
               <section
                 id="contact"
                 ref={sectionRefs.contact}

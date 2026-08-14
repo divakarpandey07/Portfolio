@@ -158,12 +158,12 @@ body::-webkit-scrollbar-thumb {
 
 .hud-nav {
   display: flex;
-  gap: 36px;
+  gap: 28px;
   pointer-events: auto;
-  background: rgba(6, 7, 16, 0.4);
+  background: rgba(6, 7, 16, 0.45);
   padding: 8px 24px;
   border-radius: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
@@ -174,7 +174,7 @@ body::-webkit-scrollbar-thumb {
   font-family: var(--font-accent);
   font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 2.5px;
+  letter-spacing: 2.2px;
   text-transform: uppercase;
   transition: color 0.3s, transform 0.3s;
   cursor: pointer;
@@ -337,7 +337,7 @@ body::-webkit-scrollbar-thumb {
   transform: translateY(0) scale(1);
 }
 
-/* Premium Feathered Header Blur Bar */
+/* Header Blur Bar */
 .hud-bar {
   position: fixed;
   top: 0;
@@ -609,6 +609,181 @@ p {
   color: var(--accent-gold);
   border-color: var(--accent-gold);
   background: rgba(189, 160, 122, 0.08);
+}
+
+/* ==========================================================================
+   ABOUT ME SECTION STYLING (Professional Portrait & Storytelling)
+   ========================================================================== */
+
+.about-card {
+  padding: 48px;
+  border-left-color: var(--accent-gold);
+}
+
+.about-layout-grid {
+  display: grid;
+  grid-template-columns: 310px 1fr;
+  gap: 44px;
+  align-items: flex-start;
+}
+
+.about-portrait-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.about-portrait-card {
+  position: relative;
+  width: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid rgba(189, 160, 122, 0.35);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(189, 160, 122, 0.12);
+  background: #020205;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s;
+}
+
+.about-portrait-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.8), 0 0 40px rgba(189, 160, 122, 0.25);
+  border-color: var(--accent-gold);
+}
+
+.about-portrait-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  object-position: center top;
+  filter: contrast(102%) brightness(98%);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.about-portrait-card:hover .about-portrait-img {
+  transform: scale(1.02);
+}
+
+.about-portrait-badge {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  right: 12px;
+  background: rgba(4, 6, 14, 0.85);
+  border: 1px solid rgba(189, 160, 122, 0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 8px 12px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-accent);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--accent-gold);
+  text-transform: uppercase;
+}
+
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-gold);
+  box-shadow: 0 0 8px var(--accent-gold);
+}
+
+.about-stat-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.stat-box {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 10px 8px;
+  text-align: center;
+  border-radius: 4px;
+}
+
+.stat-number {
+  display: block;
+  font-family: var(--font-accent);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.6rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.about-content-wrapper {
+  text-align: left;
+}
+
+.about-bio-text {
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.about-bio-text strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.about-pillars {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.pillar-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 12px 16px;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.pillar-item:hover {
+  border-color: rgba(189, 160, 122, 0.25);
+  background: rgba(189, 160, 122, 0.04);
+  transform: translateX(3px);
+}
+
+.pillar-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.pillar-title {
+  font-family: var(--font-accent);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.pillar-desc {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-top: 3px;
 }
 
 /* Skills Badges */
@@ -1720,6 +1895,10 @@ p {
   .glass-card {
     padding: 44px 36px;
   }
+  .about-layout-grid {
+    grid-template-columns: 260px 1fr;
+    gap: 32px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -1735,6 +1914,17 @@ p {
   .glass-card {
     padding: 32px 20px;
     border-left-width: 2px;
+  }
+
+  /* About layout on mobile */
+  .about-layout-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .about-portrait-wrapper {
+    max-width: 280px;
+    margin: 0 auto;
   }
 
   /* HUD on mobile */
@@ -1804,7 +1994,7 @@ p {
     border-radius: 40px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     z-index: 999;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(189, 160, 122, 0.15);
   }
@@ -1817,20 +2007,20 @@ p {
     background: transparent;
     border: none;
     color: var(--text-secondary);
-    padding: 6px 8px;
+    padding: 5px 6px;
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s;
-    min-width: 44px;
+    min-width: 40px;
   }
 
   .mobile-dock-item .dock-icon {
-    font-size: 1.05rem;
+    font-size: 1.0rem;
   }
 
   .mobile-dock-item .dock-label {
     font-family: var(--font-accent);
-    font-size: 0.58rem;
+    font-size: 0.55rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
