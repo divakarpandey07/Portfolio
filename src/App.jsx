@@ -5,6 +5,9 @@ import Toast from './components/Toast';
 import CommandPalette from './components/CommandPalette';
 import ProjectModal from './components/ProjectModal';
 import MobileNav from './components/MobileNav';
+import TerminalModal from './components/TerminalModal';
+import CodeSpotlight from './components/CodeSpotlight';
+import ThemeSwitcher from './components/ThemeSwitcher';
 
 const SECTIONS = [
   { id: 'hero', label: 'Home' },
@@ -31,7 +34,7 @@ const ALL_PROJECTS = [
       'Responsive full-stack architecture built with React.js, Express/Node.js, and MongoDB.'
     ],
     img: '/digital_pateri_ss.png',
-    tech: ['React.js', 'Node.js', 'MongoDB', 'Gemini AI', 'REST API'],
+    tech: ['React.js', 'Node.js', 'MongoDB', 'Gemini AI', 'REST API', 'JavaScript'],
     demo: 'https://digital-pateri.vercel.app',
     git: 'https://github.com/divakarpandey07/digital-pateri'
   },
@@ -49,7 +52,7 @@ const ALL_PROJECTS = [
       'Clean modern UI crafted with TypeScript and React.js, optimized for zero-latency page transitions.'
     ],
     img: '/bharat_yatra_ss.png',
-    tech: ['TypeScript', 'React.js', 'Vercel', 'TailwindCSS', 'Framer Motion'],
+    tech: ['TypeScript', 'React.js', 'Vercel', 'TailwindCSS', 'JavaScript'],
     demo: 'https://bharat-yatra-puce.vercel.app',
     git: 'https://github.com/divakarpandey07/BharatYatra'
   },
@@ -158,6 +161,21 @@ const ALL_PROJECTS = [
   }
 ];
 
+const SKILLS_LIST = [
+  { name: 'React.js', emoji: '⚛️', category: 'frontend', projects: ['digital-pateri', 'bharat-yatra', 'carbon-tracker'] },
+  { name: 'Node.js', emoji: '🟢', category: 'backend', projects: ['digital-pateri'] },
+  { name: 'Gemini AI', emoji: '🤖', category: 'ai', projects: ['digital-pateri'] },
+  { name: 'Java', emoji: '☕', category: 'mobile', projects: ['nightshield'] },
+  { name: 'Android Studio', emoji: '📱', category: 'mobile', projects: ['nightshield'] },
+  { name: 'Python', emoji: '🐍', category: 'ai', projects: ['cyberguard'] },
+  { name: 'C++', emoji: '⚙️', category: 'systems', projects: ['iot-classroom'] },
+  { name: 'ESP32 / IoT', emoji: '🔌', category: 'systems', projects: ['iot-classroom'] },
+  { name: 'SQL / MySQL', emoji: '💾', category: 'backend', projects: ['saanidhya'] },
+  { name: 'MongoDB', emoji: '🍃', category: 'backend', projects: ['digital-pateri'] },
+  { name: 'TypeScript', emoji: '🟦', category: 'frontend', projects: ['bharat-yatra'] },
+  { name: 'Git & GitHub', emoji: '🌿', category: 'tools', projects: ['digital-pateri', 'bharat-yatra', 'nightshield', 'iot-classroom'] }
+];
+
 export default function App() {
   const [activeSection, setActiveSection] = useState('hero');
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -169,8 +187,10 @@ export default function App() {
 
   // Interactive states
   const [cmdOpen, setCmdOpen] = useState(false);
+  const [terminalOpen, setTerminalOpen] = useState(false);
   const [modalProject, setModalProject] = useState(null);
   const [projectCategory, setProjectCategory] = useState('all');
+  const [selectedSkill, setSelectedSkill] = useState(null);
   const [toast, setToast] = useState({ visible: false, message: '', icon: '✨' });
   const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
   const [formSending, setFormSending] = useState(false);
@@ -208,25 +228,29 @@ export default function App() {
       if (current >= 100) {
         current = 100;
         clearInterval(interval);
-        setTimeout(() => setLoading(false), 300);
+        setTimeout(() => setLoading(false), 250);
       }
       setLoadingProgress(current);
-    }, 80);
+    }, 70);
     return () => clearInterval(interval);
   }, []);
 
+  // Keyboard shortcuts listener for Cmd+K and ` (Terminal)
   useEffect(() => {
     const handleKeyDown = (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
         setCmdOpen((prev) => !prev);
+      } else if (e.key === '`' && !e.metaKey && !e.ctrlKey && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        setTerminalOpen((prev) => !prev);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Lenis Smooth Scroll & Continuous Scroll Progress
+  // Lenis Smooth Scroll
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
@@ -251,7 +275,6 @@ export default function App() {
       setScrollProgress(progress);
       document.documentElement.style.setProperty('--scroll', String(progress));
 
-      // Determine active viewport section based on top offset
       const scrollPos = window.scrollY + window.innerHeight * 0.35;
       let currentSection = 'hero';
 
@@ -307,6 +330,7 @@ export default function App() {
         target.tagName === 'BUTTON' ||
         target.closest('.glass-card') ||
         target.closest('.project-card') ||
+        target.closest('.comp-card') ||
         target.closest('.dot-wrapper') ||
         target.closest('.hud-nav-item') ||
         target.closest('.hud-logo') ||
@@ -348,7 +372,21 @@ export default function App() {
     }
   };
 
+  const handleSkillClick = (skill) => {
+    if (selectedSkill?.name === skill.name) {
+      setSelectedSkill(null);
+      showToast('Skill filter cleared', '🔄');
+    } else {
+      setSelectedSkill(skill);
+      showToast(`Highlighting projects built with ${skill.name} ⚡`, '🔍');
+      scrollToSection('featured-projects');
+    }
+  };
+
   const filteredProjects = ALL_PROJECTS.filter((p) => {
+    if (selectedSkill) {
+      return selectedSkill.projects.includes(p.id);
+    }
     if (projectCategory === 'all') return true;
     return p.category === projectCategory;
   });
@@ -399,6 +437,15 @@ export default function App() {
         }}
       />
 
+      {/* Interactive Terminal Modal */}
+      <TerminalModal
+        isOpen={terminalOpen}
+        onClose={() => setTerminalOpen(false)}
+        onNavigate={scrollToSection}
+        onDownloadCV={handleDownloadCV}
+        onShowToast={showToast}
+      />
+
       {/* Project Deep Dive Modal */}
       <ProjectModal project={modalProject} onClose={() => setModalProject(null)} />
 
@@ -440,6 +487,17 @@ export default function App() {
               </nav>
 
               <div className="hud-actions">
+                <ThemeSwitcher onShowToast={showToast} />
+
+                <button
+                  className="hud-cmd-btn terminal-trigger"
+                  onClick={() => setTerminalOpen(true)}
+                  title="Open Developer Terminal (`)"
+                  aria-label="Open Terminal"
+                >
+                  <span>&gt;_</span>
+                </button>
+
                 <button
                   className="hud-cmd-btn"
                   onClick={() => setCmdOpen(true)}
@@ -553,9 +611,9 @@ export default function App() {
                     </a>
                     <button
                       className="social-icon-link cmd-trigger-text"
-                      onClick={() => setCmdOpen(true)}
+                      onClick={() => setTerminalOpen(true)}
                     >
-                      ⌨️ ⌘K Menu
+                      &gt;_ Terminal
                     </button>
                   </div>
 
@@ -738,23 +796,29 @@ export default function App() {
                   </button>
 
                   <div className="skills-matrix-header" style={{ marginTop: '36px' }}>
-                    <span className="accent-text" style={{ fontSize: '0.65rem' }}>CORE TECHNICAL ARSENAL</span>
+                    <span className="accent-text" style={{ fontSize: '0.65rem' }}>INTERACTIVE TECHNICAL ARSENAL (CLICK TO FILTER PROJECTS)</span>
                   </div>
 
-                  <div className="badge-container" style={{ marginTop: '16px', gap: '12px' }}>
-                    <span className="bounce-badge"><span className="badge-emoji">⚛️</span> React.js</span>
-                    <span className="bounce-badge"><span className="badge-emoji">🟢</span> Node.js</span>
-                    <span className="bounce-badge"><span className="badge-emoji">⚙️</span> C++</span>
-                    <span className="bounce-badge"><span className="badge-emoji">☕</span> Java</span>
-                    <span className="bounce-badge"><span className="badge-emoji">🐍</span> Python</span>
-                    <span className="bounce-badge"><span className="badge-emoji">🤖</span> Gemini AI</span>
-                    <span className="bounce-badge"><span className="badge-emoji">📱</span> Android Studio</span>
-                    <span className="bounce-badge"><span className="badge-emoji">🔌</span> IoT &amp; ESP32</span>
-                    <span className="bounce-badge"><span className="badge-emoji">💾</span> SQL / MongoDB</span>
-                    <span className="bounce-badge"><span className="badge-emoji">🌿</span> Git &amp; GitHub</span>
-                    <span className="bounce-badge"><span className="badge-emoji">🐧</span> Linux</span>
-                    <span className="bounce-badge"><span className="badge-emoji">🧠</span> DSA &amp; OOP</span>
+                  <div className="badge-container" style={{ marginTop: '16px', gap: '10px' }}>
+                    {SKILLS_LIST.map((sk) => (
+                      <button
+                        key={sk.name}
+                        className={`bounce-badge ${selectedSkill?.name === sk.name ? 'skill-active' : ''}`}
+                        onClick={() => handleSkillClick(sk)}
+                        title={`Click to view projects using ${sk.name}`}
+                      >
+                        <span className="badge-emoji">{sk.emoji}</span>
+                        <span>{sk.name}</span>
+                      </button>
+                    ))}
                   </div>
+
+                  {selectedSkill && (
+                    <div className="skill-filter-notice">
+                      <span>Filtered by skill: <strong>{selectedSkill.name}</strong></span>
+                      <button className="clear-skill-btn" onClick={() => setSelectedSkill(null)}>✕ Clear</button>
+                    </div>
+                  )}
                 </div>
               </section>
 
@@ -764,7 +828,7 @@ export default function App() {
                 ref={sectionRefs['featured-projects']}
                 className="scroll-section align-left"
               >
-                <div className="glass-card" style={{ maxWidth: '720px' }}>
+                <div className="glass-card" style={{ maxWidth: '780px' }}>
                   <span className="accent-text">SELECTED WORK</span>
                   <h2>Featured Projects</h2>
 
@@ -780,8 +844,11 @@ export default function App() {
                     ].map((tab) => (
                       <button
                         key={tab.key}
-                        className={`filter-pill ${projectCategory === tab.key ? 'active' : ''}`}
-                        onClick={() => setProjectCategory(tab.key)}
+                        className={`filter-pill ${projectCategory === tab.key && !selectedSkill ? 'active' : ''}`}
+                        onClick={() => {
+                          setSelectedSkill(null);
+                          setProjectCategory(tab.key);
+                        }}
                       >
                         {tab.label}
                       </button>
@@ -864,6 +931,14 @@ export default function App() {
                   >
                     View All 8 Projects in Gallery →
                   </button>
+
+                  {/* Architecture Code Snippet Spotlight */}
+                  <div style={{ marginTop: '48px' }}>
+                    <div style={{ marginBottom: '14px' }}>
+                      <span className="accent-text" style={{ fontSize: '0.65rem' }}>LIVE ARCHITECTURE CODE SPOTLIGHT</span>
+                    </div>
+                    <CodeSpotlight onShowToast={showToast} />
+                  </div>
                 </div>
               </section>
 
