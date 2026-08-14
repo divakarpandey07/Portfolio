@@ -982,7 +982,7 @@ export default function App() {
               >
                 <div className="glass-card">
                   <span className="accent-text">RECOGNITIONS &amp; DEVELOPMENT</span>
-                  <h2>Certifications &amp; More</h2>
+                  <h2>Certificates and more</h2>
 
                   <div className="divider"></div>
 
@@ -1290,7 +1290,7 @@ function ArchivePage({ view, setView, onOpenModal, onDownloadCV }) {
     pageTitle = 'Academic History';
     pageSubtitle = 'Full educational timeline and credentials';
   } else if (view === 'certifications-archive') {
-    pageTitle = 'Certifications & Events';
+    pageTitle = 'Certificates and more';
     pageSubtitle = 'Recognitions, courses and hackathon history';
   }
 
