@@ -208,10 +208,10 @@ export default function App() {
       if (current >= 100) {
         current = 100;
         clearInterval(interval);
-        setTimeout(() => setLoading(false), 400);
+        setTimeout(() => setLoading(false), 300);
       }
       setLoadingProgress(current);
-    }, 90);
+    }, 80);
     return () => clearInterval(interval);
   }, []);
 
@@ -226,7 +226,7 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Lenis Smooth Scroll
+  // Lenis Smooth Scroll & Continuous Scroll Progress
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
@@ -251,18 +251,15 @@ export default function App() {
       setScrollProgress(progress);
       document.documentElement.style.setProperty('--scroll', String(progress));
 
+      // Determine active viewport section based on top offset
+      const scrollPos = window.scrollY + window.innerHeight * 0.35;
       let currentSection = 'hero';
-      let minDiff = Infinity;
-      const windowHeight = window.innerHeight;
 
       Object.entries(sectionRefs).forEach(([id, ref]) => {
         if (ref.current) {
-          const rect = ref.current.getBoundingClientRect();
-          const sectionCenter = rect.top + rect.height / 2;
-          const viewCenter = windowHeight / 2;
-          const diff = Math.abs(sectionCenter - viewCenter);
-          if (diff < minDiff) {
-            minDiff = diff;
+          const top = ref.current.offsetTop;
+          const height = ref.current.offsetHeight;
+          if (scrollPos >= top && scrollPos < top + height) {
             currentSection = id;
           }
         }
@@ -326,111 +323,6 @@ export default function App() {
     };
   }, []);
 
-  // Cursor particle trail on desktop
-  useEffect(() => {
-    if (window.innerWidth < 768) return;
-    let lastSparkle = 0;
-
-    const handleMouseMove = (e) => {
-      const now = Date.now();
-      if (now - lastSparkle < 50) return;
-      lastSparkle = now;
-
-      const particle = document.createElement('div');
-      particle.className = 'sparkle-particle';
-      const size = Math.random() * 3 + 2;
-      particle.style.width = `${size}px`;
-      particle.style.height = `${size}px`;
-      particle.style.left = `${e.clientX}px`;
-      particle.style.top = `${e.clientY}px`;
-
-      const angle = Math.random() * Math.PI * 2;
-      const speed = Math.random() * 25 + 10;
-      particle.style.setProperty('--dx', `${Math.cos(angle) * speed}px`);
-      particle.style.setProperty('--dy', `${Math.sin(angle) * speed}px`);
-
-      document.body.appendChild(particle);
-      setTimeout(() => particle.remove(), 700);
-    };
-
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-
-  // Click ripple burst
-  useEffect(() => {
-    if (window.innerWidth < 768) return;
-    const handleClick = (e) => {
-      const ripple = document.createElement('div');
-      ripple.className = 'click-ripple';
-      ripple.style.left = `${e.clientX}px`;
-      ripple.style.top = `${e.clientY}px`;
-      document.body.appendChild(ripple);
-
-      for (let i = 0; i < 4; i++) {
-        const p = document.createElement('div');
-        p.className = 'click-burst-particle';
-        p.style.left = `${e.clientX}px`;
-        p.style.top = `${e.clientY}px`;
-        const angle = (i / 4) * Math.PI * 2;
-        const velocity = 25 + Math.random() * 15;
-        p.style.setProperty('--dx', `${Math.cos(angle) * velocity}px`);
-        p.style.setProperty('--dy', `${Math.sin(angle) * velocity}px`);
-        document.body.appendChild(p);
-        setTimeout(() => p.remove(), 500);
-      }
-      setTimeout(() => ripple.remove(), 500);
-    };
-
-    window.addEventListener('click', handleClick);
-    return () => window.removeEventListener('click', handleClick);
-  }, []);
-
-  // 3D Card Tilt on desktop
-  useEffect(() => {
-    if (window.innerWidth < 768) return;
-    const cards = document.querySelectorAll('.glass-card, .project-card, .about-portrait-card');
-    let rafId = null;
-
-    const handleMove = (e) => {
-      if (rafId) return;
-      rafId = requestAnimationFrame(() => {
-        const card = e.currentTarget;
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const angleX = -(y - rect.height / 2) / 36;
-        const angleY = (x - rect.width / 2) / 36;
-        card.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg) scale3d(1.008, 1.008, 1.008)`;
-        card.style.setProperty('--glare-x', `${(x / rect.width) * 100}%`);
-        card.style.setProperty('--glare-y', `${(y / rect.height) * 100}%`);
-        card.style.setProperty('--glare-opacity', '1');
-        rafId = null;
-      });
-    };
-
-    const handleLeave = (e) => {
-      cancelAnimationFrame(rafId);
-      rafId = null;
-      const card = e.currentTarget;
-      card.style.transform = '';
-      card.style.setProperty('--glare-opacity', '0');
-    };
-
-    cards.forEach((card) => {
-      card.addEventListener('mousemove', handleMove, { passive: true });
-      card.addEventListener('mouseleave', handleLeave);
-    });
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      cards.forEach((card) => {
-        card.removeEventListener('mousemove', handleMove);
-        card.removeEventListener('mouseleave', handleLeave);
-      });
-    };
-  }, [view, projectCategory]);
-
   const scrollToSection = (id) => {
     if (view !== 'main') {
       setView('main');
@@ -447,7 +339,7 @@ export default function App() {
     if (targetRef && targetRef.current) {
       if (window.lenis) {
         window.lenis.scrollTo(targetRef.current, {
-          duration: 1.4,
+          duration: 1.2,
           easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
         });
       } else {
@@ -593,40 +485,29 @@ export default function App() {
               <section
                 id="hero"
                 ref={sectionRefs.hero}
-                className={`scroll-section align-left ${activeSection === 'hero' ? 'visible' : ''}`}
+                className="scroll-section align-left"
               >
                 <div className="glass-card hero-card">
-                  {/* Live Status Badge */}
                   <div className="live-status-pill">
                     <span className="live-status-dot"></span>
                     <span className="live-status-text">AVAILABLE FOR ROLES &amp; INNOVATIONS</span>
                   </div>
 
-                  <span className="accent-text line-wrapper">
-                    <span className="reveal-line stagger-1">WELCOME TO THE EXHIBITION</span>
-                  </span>
+                  <span className="accent-text">WELCOME TO THE EXHIBITION</span>
                   
-                  <h1 className="line-wrapper">
-                    <span className="reveal-line stagger-2 shimmer-title">Creative</span>
-                  </h1>
-                  <h1 className="line-wrapper">
-                    <span className="reveal-line stagger-3 shimmer-title">Developer.</span>
+                  <h1 className="shimmer-title hero-heading">
+                    Creative<br />Developer.
                   </h1>
 
                   <div className="divider"></div>
 
-                  <p className="line-wrapper hero-bio">
-                    <span className="reveal-line stagger-4">
-                      I am <strong>Divakar Pandey</strong>, Full-Stack Software Engineer &amp; MCA Candidate at Lovely Professional University.
-                    </span>
+                  <p className="hero-bio">
+                    I am <strong>Divakar Pandey</strong>, Full-Stack Software Engineer &amp; MCA Candidate at Lovely Professional University.
                   </p>
-                  <p className="line-wrapper hero-desc">
-                    <span className="reveal-line stagger-5">
-                      Specializing in high-performance web systems, AI-assisted governance architectures, and secure mobile &amp; IoT solutions.
-                    </span>
+                  <p className="hero-desc">
+                    Specializing in high-performance web applications, AI-assisted governance systems, and secure mobile &amp; IoT architectures.
                   </p>
 
-                  {/* Primary CTA Buttons */}
                   <div className="hero-cta-group">
                     <button
                       className="btn-primary"
@@ -647,14 +528,12 @@ export default function App() {
                     </button>
                   </div>
 
-                  {/* Quick Social Links Bar */}
                   <div className="hero-social-links">
                     <a
                       href="https://github.com/divakarpandey07"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="social-icon-link"
-                      title="GitHub"
                     >
                       🐙 GitHub
                     </a>
@@ -663,14 +542,12 @@ export default function App() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="social-icon-link"
-                      title="LinkedIn"
                     >
                       🔗 LinkedIn
                     </a>
                     <a
                       href="mailto:pandeydivakar07@gmail.com"
                       className="social-icon-link"
-                      title="Email"
                     >
                       ✉️ Email
                     </a>
@@ -700,101 +577,112 @@ export default function App() {
               <section
                 id="about"
                 ref={sectionRefs.about}
-                className={`scroll-section align-center ${activeSection === 'about' ? 'visible' : ''}`}
+                className="scroll-section align-center"
               >
-                <div className="glass-card about-card" style={{ maxWidth: '880px' }}>
-                  <div className="about-layout-grid">
-                    {/* Left: Professional Portrait Frame */}
-                    <div className="about-portrait-wrapper">
-                      <div className="about-portrait-card">
+                <div className="glass-card about-bento-card">
+                  <div className="about-header-badge">
+                    <span className="accent-text">BIOGRAPHY &amp; ENGINEERING MINDSET</span>
+                    <h2 className="shimmer-title about-main-title">Divakar Pandey</h2>
+                    <p className="about-subtitle">Full-Stack Software Engineer • MCA Candidate • Tech Innovator</p>
+                  </div>
+
+                  <div className="divider" style={{ margin: '20px auto 32px' }}></div>
+
+                  <div className="about-grid-container">
+                    {/* Left Column: Portrait & Credentials */}
+                    <div className="about-left-col">
+                      <div className="portrait-frame">
                         <img
                           src="/divakar_profile.jpg"
                           alt="Divakar Pandey in professional blue suit"
-                          className="about-portrait-img"
+                          className="portrait-photo"
                         />
-                        <div className="about-portrait-glow" />
-                        <div className="about-portrait-badge">
-                          <span className="badge-dot" />
+                        <div className="portrait-tag">
+                          <span className="live-status-dot" style={{ width: '6px', height: '6px' }}></span>
                           <span>MCA SOFTWARE ENGINEER</span>
                         </div>
                       </div>
 
-                      {/* Stat Metrics Box */}
-                      <div className="about-stat-strip">
-                        <div className="stat-box">
-                          <span className="stat-number">8+</span>
-                          <span className="stat-label">Projects</span>
+                      {/* Stat Metrics Grid */}
+                      <div className="about-mini-stats">
+                        <div className="mini-stat-item">
+                          <div className="stat-value">MCA</div>
+                          <div className="stat-desc">LPU • 7.36 CGPA</div>
                         </div>
-                        <div className="stat-box">
-                          <span className="stat-number">MCA</span>
-                          <span className="stat-label">7.36 CGPA</span>
+                        <div className="mini-stat-item">
+                          <div className="stat-value">8+</div>
+                          <div className="stat-desc">Projects Shipped</div>
                         </div>
-                        <div className="stat-box">
-                          <span className="stat-number">7+</span>
-                          <span className="stat-label">Certs &amp; Events</span>
+                        <div className="mini-stat-item">
+                          <div className="stat-value">7+</div>
+                          <div className="stat-desc">Certs &amp; Hackathons</div>
+                        </div>
+                        <div className="mini-stat-item">
+                          <div className="stat-value">100%</div>
+                          <div className="stat-desc">Committed to Quality</div>
                         </div>
                       </div>
                     </div>
 
-                    {/* Right: Narrative Story & Engineering Mindset */}
-                    <div className="about-content-wrapper">
-                      <span className="accent-text line-wrapper">
-                        <span className="reveal-line stagger-1">BIOGRAPHY &amp; VISION</span>
-                      </span>
-                      <h2 className="line-wrapper" style={{ fontSize: '2.3rem', marginTop: '4px' }}>
-                        <span className="reveal-line stagger-2">Engineering with Purpose.</span>
-                      </h2>
+                    {/* Right Column: Bio Narrative & Core Pillars */}
+                    <div className="about-right-col">
+                      <div className="about-bio-block">
+                        <p>
+                          I am a <strong>Software Engineer &amp; MCA Candidate at Lovely Professional University</strong> driven by the challenge of designing scalable architectures, intelligent AI models, and mission-critical software solutions.
+                        </p>
+                        <p style={{ marginTop: '12px' }}>
+                          My engineering journey spans from developing <strong>digital-pateri</strong> (an AI-governed Smart Village portal serving real citizens in Pateri Gram Panchayat) to building <strong>NightShield</strong> (client-side encrypted messaging mobile app) and automated <strong>IoT Digital Classrooms</strong> with microcontrollers.
+                        </p>
+                      </div>
 
-                      <div className="divider" style={{ margin: '20px 0' }}></div>
-
-                      <p className="about-bio-text">
-                        Hello! I'm <strong>Divakar Pandey</strong>, a developer dedicated to turning complex system architectures, cloud backends, and applied artificial intelligence into clean, human-centered digital experiences.
-                      </p>
-
-                      <p className="about-bio-text" style={{ marginTop: '12px' }}>
-                        Whether building <strong>digital-pateri</strong> to empower rural citizens with AI-assisted Gram Panchayat governance, designing <strong>NightShield</strong> with client-side AES cryptography, or architecting IoT embedded hardware solutions — I approach every challenge with rigorous problem-solving, structured engineering, and aesthetic precision.
-                      </p>
-
-                      {/* 3 Core Engineering Pillars */}
-                      <div className="about-pillars">
-                        <div className="pillar-item">
-                          <div className="pillar-icon">⚡</div>
+                      {/* 4 Core Competency Cards */}
+                      <div className="about-competencies-grid">
+                        <div className="comp-card">
+                          <div className="comp-icon">💻</div>
                           <div>
-                            <div className="pillar-title">Scalable Architecture</div>
-                            <div className="pillar-desc">Clean, decoupled React/Node codebases, resilient MongoDB/SQL schemas, and REST/microservices.</div>
+                            <div className="comp-title">Full-Stack Web Systems</div>
+                            <div className="comp-desc">React.js, Node.js, Express, TypeScript, MongoDB, MySQL &amp; Cloud.</div>
                           </div>
                         </div>
 
-                        <div className="pillar-item">
-                          <div className="pillar-icon">🤖</div>
+                        <div className="comp-card">
+                          <div className="comp-icon">🤖</div>
                           <div>
-                            <div className="pillar-title">Applied AI &amp; Intelligence</div>
-                            <div className="pillar-desc">Integrating Gemini AI LLM agents and machine learning intrusion anomaly classifiers into production workflows.</div>
+                            <div className="comp-title">Applied AI &amp; LLM Logic</div>
+                            <div className="comp-desc">Gemini AI API assistants, Python, Scikit-Learn intrusion classifiers.</div>
                           </div>
                         </div>
 
-                        <div className="pillar-item">
-                          <div className="pillar-icon">🛡️</div>
+                        <div className="comp-card">
+                          <div className="comp-icon">🔒</div>
                           <div>
-                            <div className="pillar-title">Security &amp; Hardware Edge</div>
-                            <div className="pillar-desc">AES-256 mobile encryption, role-based auth, and ESP32/NodeMCU IoT sensor networks.</div>
+                            <div className="comp-title">Mobile Security &amp; Android</div>
+                            <div className="comp-desc">Java, Android Studio, AES-256 cryptography, Firebase Realtime.</div>
+                          </div>
+                        </div>
+
+                        <div className="comp-card">
+                          <div className="comp-icon">⚡</div>
+                          <div>
+                            <div className="comp-title">IoT &amp; Embedded Hardware</div>
+                            <div className="comp-desc">ESP32, NodeMCU ESP8266, C++, RFID &amp; climate telemetry sensors.</div>
                           </div>
                         </div>
                       </div>
 
-                      {/* Action Links */}
-                      <div className="about-actions" style={{ marginTop: '24px', display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
+                      {/* Actions */}
+                      <div className="about-action-bar">
                         <button
                           className="btn-primary-small"
                           onClick={handleDownloadCV}
                         >
-                          📄 Download Full Resume (PDF)
+                          📄 Download Official CV (PDF)
                         </button>
                         <button
                           className="btn-outline-small"
-                          onClick={() => scrollToSection('featured-projects')}
+                          onClick={() => scrollToSection('contact')}
                         >
-                          Explore Selected Work ↓
+                          ✉️ Get In Touch
                         </button>
                       </div>
                     </div>
@@ -806,15 +694,11 @@ export default function App() {
               <section
                 id="education-skills"
                 ref={sectionRefs['education-skills']}
-                className={`scroll-section align-right ${activeSection === 'education-skills' ? 'visible' : ''}`}
+                className="scroll-section align-right"
               >
                 <div className="glass-card">
-                  <span className="accent-text line-wrapper">
-                    <span className="reveal-line stagger-1">JOURNEY &amp; CAPABILITIES</span>
-                  </span>
-                  <h2 className="line-wrapper">
-                    <span className="reveal-line stagger-2">Education &amp; Skills</span>
-                  </h2>
+                  <span className="accent-text">JOURNEY &amp; CAPABILITIES</span>
+                  <h2>Education &amp; Skills</h2>
 
                   <div className="divider"></div>
 
@@ -878,19 +762,14 @@ export default function App() {
               <section
                 id="featured-projects"
                 ref={sectionRefs['featured-projects']}
-                className={`scroll-section align-left ${activeSection === 'featured-projects' ? 'visible' : ''}`}
+                className="scroll-section align-left"
               >
                 <div className="glass-card" style={{ maxWidth: '720px' }}>
-                  <span className="accent-text line-wrapper">
-                    <span className="reveal-line stagger-1">SELECTED WORK</span>
-                  </span>
-                  <h2 className="line-wrapper">
-                    <span className="reveal-line stagger-2">Featured Projects</span>
-                  </h2>
+                  <span className="accent-text">SELECTED WORK</span>
+                  <h2>Featured Projects</h2>
 
                   <div className="divider"></div>
 
-                  {/* Category Filter Pills */}
                   <div className="project-filter-bar">
                     {[
                       { key: 'all', label: 'All (8)' },
@@ -909,7 +788,6 @@ export default function App() {
                     ))}
                   </div>
 
-                  {/* Fluid Project Cards Deck */}
                   <div className="project-grid-responsive">
                     {filteredProjects.slice(0, 4).map((proj) => (
                       <div key={proj.id} className="project-card interactive-project-card">
@@ -934,7 +812,7 @@ export default function App() {
                           </div>
                         </div>
 
-                        <div className="badge-container" style={{ marginTop: '10px', opacity: 1, transform: 'none' }}>
+                        <div className="badge-container" style={{ marginTop: '10px' }}>
                           {proj.tech.map((t, idx) => (
                             <span key={idx} className="badge">{t}</span>
                           ))}
@@ -993,15 +871,11 @@ export default function App() {
               <section
                 id="certifications"
                 ref={sectionRefs.certifications}
-                className={`scroll-section align-right ${activeSection === 'certifications' ? 'visible' : ''}`}
+                className="scroll-section align-right"
               >
                 <div className="glass-card">
-                  <span className="accent-text line-wrapper">
-                    <span className="reveal-line stagger-1">RECOGNITIONS &amp; DEVELOPMENT</span>
-                  </span>
-                  <h2 className="line-wrapper">
-                    <span className="reveal-line stagger-2">Certifications &amp; More</span>
-                  </h2>
+                  <span className="accent-text">RECOGNITIONS &amp; DEVELOPMENT</span>
+                  <h2>Certifications &amp; More</h2>
 
                   <div className="divider"></div>
 
@@ -1045,25 +919,18 @@ export default function App() {
               <section
                 id="contact"
                 ref={sectionRefs.contact}
-                className={`scroll-section align-center ${activeSection === 'contact' ? 'visible' : ''}`}
+                className="scroll-section align-center"
               >
                 <div className="glass-card" style={{ maxWidth: '720px' }}>
-                  <span className="accent-text line-wrapper">
-                    <span className="reveal-line stagger-1">SAY HELLO // COLLABORATE</span>
-                  </span>
-                  <h2 className="line-wrapper">
-                    <span className="reveal-line stagger-2">Get In Touch</span>
-                  </h2>
+                  <span className="accent-text">SAY HELLO // COLLABORATE</span>
+                  <h2>Get In Touch</h2>
 
                   <div className="divider" style={{ margin: '28px auto' }}></div>
 
-                  <p className="line-wrapper" style={{ textAlign: 'center' }}>
-                    <span className="reveal-line stagger-3">
-                      Have an interesting project, full-time engineering opportunity, or research collaboration?
-                    </span>
+                  <p style={{ textAlign: 'center' }}>
+                    Have an interesting project, full-time engineering opportunity, or research collaboration? My inbox is always open.
                   </p>
 
-                  {/* Direct Resume Download Card */}
                   <div className="resume-download-box">
                     <div className="resume-box-left">
                       <span className="resume-icon">📄</span>
@@ -1091,7 +958,6 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* 1-Click Copy Contacts */}
                   <div className="contact-details">
                     <div className="contact-item">
                       <div className="contact-icon">✉</div>
@@ -1155,7 +1021,6 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* Interactive Quick Message Form */}
                   <form className="contact-quick-form" onSubmit={handleContactSubmit}>
                     <div className="form-row">
                       <input
@@ -1308,7 +1173,7 @@ function ArchivePage({ view, setView, onOpenModal, onDownloadCV }) {
   }
 
   return (
-    <section className="scroll-section align-center visible" style={{ minHeight: 'auto', padding: '100px 0 60px' }}>
+    <section className="scroll-section align-center" style={{ minHeight: 'auto', padding: '100px 0 60px' }}>
       <div className="glass-card" style={{ width: '100%', maxWidth: '1000px' }}>
         <div className="archive-header">
           <div>
@@ -1331,7 +1196,7 @@ function ArchivePage({ view, setView, onOpenModal, onDownloadCV }) {
             {projects.map((proj, idx) => (
               <div
                 key={idx}
-                className={`project-card archive-stagger-${Math.min(idx + 1, 10)}`}
+                className="project-card"
                 style={{
                   borderBottom: 'none',
                   background: 'rgba(255,255,255,0.015)',
@@ -1354,7 +1219,7 @@ function ArchivePage({ view, setView, onOpenModal, onDownloadCV }) {
                     <span>🔍 Case Study</span>
                   </div>
                 </div>
-                <div className="badge-container" style={{ marginTop: '12px', opacity: 1, transform: 'none' }}>
+                <div className="badge-container" style={{ marginTop: '12px' }}>
                   {proj.tech.map((t, i) => (
                     <span key={i} className="badge" style={{ fontSize: '0.6rem', padding: '4px 10px' }}>{t}</span>
                   ))}
@@ -1385,11 +1250,11 @@ function ArchivePage({ view, setView, onOpenModal, onDownloadCV }) {
 
         {view === 'education-archive' && (
           <div className="archive-list">
-            <div className="timeline" style={{ opacity: 1, transform: 'none' }}>
+            <div className="timeline">
               {education.map((edu, idx) => (
                 <div
                   key={idx}
-                  className={`timeline-item archive-stagger-${Math.min(idx + 1, 10)}`}
+                  className="timeline-item"
                   style={{ borderLeftColor: 'var(--accent-gold)' }}
                 >
                   <div className="timeline-date">{edu.date}</div>
@@ -1404,11 +1269,11 @@ function ArchivePage({ view, setView, onOpenModal, onDownloadCV }) {
 
         {view === 'certifications-archive' && (
           <div className="archive-list">
-            <div className="timeline" style={{ opacity: 1, transform: 'none' }}>
+            <div className="timeline">
               {certifications.map((cert, idx) => (
                 <div
                   key={idx}
-                  className={`timeline-item archive-stagger-${Math.min(idx + 1, 10)}`}
+                  className="timeline-item"
                   style={{ borderLeftColor: 'var(--accent-gold)' }}
                 >
                   <div className="timeline-date">{cert.date}</div>
