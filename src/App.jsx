@@ -16,7 +16,7 @@ const SECTIONS = [
   { id: 'about', label: 'About Me' },
   { id: 'education-skills', label: 'Education & Skills' },
   { id: 'featured-projects', label: 'Featured Projects' },
-  { id: 'certifications', label: 'Certificates and more' },
+  { id: 'certifications', label: 'Certificates' },
   { id: 'contact', label: 'Contact' }
 ];
 

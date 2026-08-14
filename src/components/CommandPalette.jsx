@@ -69,7 +69,7 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onShowToas
     {
       id: 'nav-certifications',
       category: 'Navigation',
-      title: 'Go to Certifications & Events',
+      title: 'Go to Certificates and more',
       subtitle: 'Workshops, NIIT Java, InnoStart',
       icon: '🏆',
       perform: () => onNavigate('certifications')
